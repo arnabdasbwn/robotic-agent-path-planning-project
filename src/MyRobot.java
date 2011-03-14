@@ -1,4 +1,7 @@
+import java.awt.Point;
 import java.awt.event.ActionEvent;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -23,10 +26,11 @@ public class MyRobot {
 	
 	private float discountFactor;
 	private float learningRate;
-	private double[] qTable; 
+	private HashMap<Point, State> qTable;
+	
 	
 	public MyRobot() {
-		
+		qTable = new HashMap<Point, State>();
 		qLearning = new JButton("Q Learning");
 		aStar = new JButton("A* planning");
 		
