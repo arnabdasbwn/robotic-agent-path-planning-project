@@ -1,3 +1,5 @@
+import java.awt.Point;
+
 
 
 public class State 
@@ -7,8 +9,23 @@ public class State
 	public double left = 0;
 	public double right = 0;
 	
-	public State()
+	private boolean wall = false;
+	
+	private Point point;
+	
+	public State(Point point, boolean wall)
 	{
-		
+		this.point = point;
+		this.wall = wall;
+	}
+	
+	public boolean isWall()
+	{
+		return wall;
+	}
+	
+	public String toString()
+	{
+		return String.format("|(%1s,%2s)| %3$.2f | %4$.2f | %5$.2f | %6$.2f |\n", point.x, point.y, up, down, left, right);
 	}
 }
