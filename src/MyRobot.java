@@ -21,6 +21,7 @@ public class MyRobot {
 	public static final int DOWN = 1;
 	public static final int LEFT = 2;
 	public static final int RIGHT = 3;
+	public static final int MAX_STEPS = 512;
 		
 	
 	JButton qLearning;
@@ -118,9 +119,13 @@ public class MyRobot {
 		for(int i = 0; i < numIter; i++)
 		{
 			goalFound = false;
-			while(!goalFound)
+			for(int j = 0; (j < MAX_STEPS) && !goalFound; j++)
 			{
-				goalFound = randomWalk();
+				goalFound = randomWalk(false);
+				if (j == MAX_STEPS -1)
+				{
+					System.out.println("Max steps reached, cutting search short." + i);
+				}
 			}
 			
 			map.moveRobot(startPoint.x, startPoint.y, "N");
@@ -226,7 +231,42 @@ public class MyRobot {
 		return next.isGoal();
 	}
 
-	private boolean randomWalk() 
+	private boolean takeBestPath(int numerator, int denominator)
+	{
+		return ((int) Math.random() * denominator) > numerator;
+		
+	}
+	private boolean allZero(State s)
+	{
+		return s.up == s.down && s.down == s.left && s.left == s.right;
+	}
+	
+	private int decideDirection(State current, int randomMove)
+	{
+		int direction = -1;
+		if (takeBestPath(3,4) && !allZero(current))
+		{
+			if (current.up > Math.max(current.down, Math.max(current.left, current.right)))
+			{
+				direction = UP;
+			}
+			else if (current.down > Math.max(current.left, current.right))
+			{
+				direction = DOWN;
+			}
+			else if (current.left > current.right)
+			{
+				direction = LEFT;
+			}
+			else
+			{
+				direction = RIGHT;
+			}
+		}
+		return direction;
+	}
+	
+	private boolean randomWalk(boolean completelyRandom) 
 	{
 		int[] robot = map.getRobotLocation();
 		
@@ -238,6 +278,14 @@ public class MyRobot {
 		while(blocked)
 		{
 			int direction = (int) (Math.random() * 4);
+			if (!completelyRandom)
+			{
+				int willTakeDirection = decideDirection(s, direction);
+				if (willTakeDirection != -1)
+				{
+					direction = decideDirection(s, direction);
+				}
+			}
 			
 			switch(direction)
 			{
