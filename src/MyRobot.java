@@ -1,11 +1,20 @@
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.GridLayout;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.prefs.BackingStoreException;
 
+import javax.swing.AbstractButton;
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JSeparator;
+import javax.swing.JTextField;
 
 /**
  * 
@@ -21,28 +30,69 @@ public class MyRobot {
 	public static final int DOWN = 1;
 	public static final int LEFT = 2;
 	public static final int RIGHT = 3;
-	public static final int MAX_STEPS = 512;
 		
 	
 	JButton qLearning;
 	JButton aStar;
-	JButton qLearningGreedy;
-	JPanel panel;
+	JButton directPathfromQTable;
+	JPanel topPanel;
 	JFrame frame;
 
 	MapGUI map;
 	
-	private final float discountFactor = 0.9f;
-	private final float learningRate = 1;
-	private final int numIter = 100;
+	private float discountFactor;
+	private float learningRate;
+	private int numIter;
+	private int maxSteps;
 	
 	private State[][] qTable;
 	private Point startPoint;
+	private JPanel botPanel;
+	private JTextField numIterField;
+	private JTextField discountFactorField;
+	private JTextField learningRateField;
+	private JLabel learningRateFieldLabel;
+	private JLabel discountFactorFieldLabel;
+	private JLabel numIterFieldLabel;
+	private JTextField yField;
+	private JTextField xField;
+	private JLabel yFieldLabel;
+	private JLabel xFieldLabel;
+	private boolean _initialized;
+	private JTextField maxStepsField;
+	private JLabel maxStepsFieldLabel;
 	
-	public MyRobot() {
-		qLearning = new JButton("Q Learning");
-		qLearningGreedy = new JButton("Q Learning Greedy");
-		aStar = new JButton("A* planning");
+	public MyRobot() 
+	{
+		map = new MapGUI();
+		topPanel = new JPanel();
+		topPanel = new JPanel();
+		botPanel = new JPanel();
+		frame = new JFrame();
+		learningRateField = new JTextField();
+		discountFactorField = new JTextField();
+		numIterField = new JTextField();
+		maxStepsField = new JTextField();
+		xField = new JTextField();
+		yField = new JTextField();
+		
+		learningRateField.setText("1");
+		discountFactorField.setText("0.9");
+		numIterField.setText("150");
+		maxStepsField.setText("500");
+		
+		learningRateFieldLabel = new JLabel("Learning Rate");
+		discountFactorFieldLabel = new JLabel("Discount Factor");
+		numIterFieldLabel = new JLabel("Number of Iterations");
+		xFieldLabel = new JLabel("X");
+		yFieldLabel = new JLabel("Y");
+		maxStepsFieldLabel = new JLabel("Max Steps per Game");
+		
+		qLearning = new JButton("Start");
+		directPathfromQTable = new JButton("Direct Path");
+		
+		aStar = new JButton("Start");
+
 		startPoint = new Point();
 		
 		aStar.addActionListener(new java.awt.event.ActionListener() {
@@ -57,78 +107,140 @@ public class MyRobot {
             }
         });
 		
-		qLearningGreedy.addActionListener(new java.awt.event.ActionListener() {
+		directPathfromQTable.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 qLearningGreedyButtonActionPerformed(evt);
             }
         });
 		
-		map = new MapGUI();
-		panel = new JPanel();
-		frame = new JFrame();
-		panel.add(qLearning);
-		panel.add(aStar);
-		panel.add(qLearningGreedy);
-		frame.add(panel);
+		topPanel.setLayout(new GridLayout(4,4));
+		topPanel.setBorder(BorderFactory.createTitledBorder("Q Learning"));
+		topPanel.add(qLearning);
+		topPanel.add(new JLabel());
+		topPanel.add(directPathfromQTable);
+		topPanel.add(new JLabel());
+		topPanel.add(learningRateFieldLabel);
+		topPanel.add(learningRateField);
+		topPanel.add(discountFactorFieldLabel);
+		topPanel.add(discountFactorField);
+		topPanel.add(numIterFieldLabel);
+		topPanel.add(numIterField);
+		topPanel.add(maxStepsFieldLabel);
+		topPanel.add(maxStepsField);
+		topPanel.add(xFieldLabel);
+		topPanel.add(xField);
+		topPanel.add(yFieldLabel);
+		topPanel.add(yField);
+		
+		botPanel.setBorder(BorderFactory.createTitledBorder("A* Path Planning"));
+		botPanel.add(aStar);
+		
+		frame.setLayout(new GridLayout(2,1));
+		frame.add(topPanel);
+		frame.add(botPanel);
+		
 		frame.pack();
 		frame.setVisible(true);
-//		map.getContentPane().add(panel);
+		
 	}
+	
+	private void initQTable()
+	{
+		int[][] tmpMap = map.getMap();
+		qTable = new State[tmpMap.length][tmpMap[0].length];
+		
+		for(int i = 0; i < tmpMap.length; i++)
+		{
+			for(int j = 0; j < tmpMap[0].length; j++)
+			{
+				Point p = new Point(i,j);
+				State s = new State(p, map.isWall(i, j));
+				
+				qTable[i][j] = s;
+			}
+		}
+		
+		qTable[map.getGoal()[0]][map.getGoal()[1]].setGoal();
+		startPoint.x = map.getRobotLocation()[0];
+		startPoint.y = map.getRobotLocation()[1];
+		xField.setText(""+startPoint.x);
+		yField.setText(""+startPoint.y);
+		xField.repaint();
+		yField.repaint();
+	}
+
 	
 	private void qLearningGreedyButtonActionPerformed(ActionEvent evt)
 	{
+		if(!updateQlearningParameters())
+			return;
+		
 		if(map.getMap() == null || map.getMap().length == 0)
 		{
 			System.out.println("Load a map first");
 			return;
 		}
+		
+		map.moveRobot(startPoint.x, startPoint.y, "N");
 		
 		boolean goalFound = false;
 		
 		while(!goalFound)
 		{
-			goalFound = greedy();
-			try {
+			try 
+			{
 				Thread.sleep(1000);
 			} catch (InterruptedException e) 
 			{
 				e.printStackTrace();
 			}
+			goalFound = greedy();
 		}
-		
-		map.moveRobot(startPoint.x, startPoint.y, "N");
 	}
 	
 	private void qLearningButtonActionPerformed(ActionEvent evt)
 	{
-		qlearning();
+		if(updateQlearningParameters())
+			qlearning();
+	}
+
+	private boolean updateQlearningParameters() {
+		numIter = Integer.valueOf(numIterField.getText());
+		discountFactor = Float.valueOf(discountFactorField.getText());
+		learningRate = Float.valueOf(learningRateField.getText());
+		maxSteps = Integer.valueOf(maxStepsField.getText());
+		
+		try
+		{
+			startPoint.x = Integer.valueOf(xField.getText());
+			startPoint.y = Integer.valueOf(yField.getText());
+		}
+		catch(NumberFormatException ex)
+		{
+			System.out.println("Set the value of the start position.");
+			return false;
+		}
+		
+		return true;
 	}
 	
 	private void qlearning()
-	{
-		if(map.getMap() == null || map.getMap().length == 0)
-		{
-			System.out.println("Load a map first");
-			return;
-		}
-		
-		initQTable();
-		
+	{	
 		boolean goalFound = false;
 		
 		for(int i = 0; i < numIter; i++)
 		{
+			map.moveRobot(startPoint.x, startPoint.y, "N");
+			
 			goalFound = false;
-			for(int j = 0; (j < MAX_STEPS) && !goalFound; j++)
+			for(int j = 0; (j < maxSteps) && !goalFound; j++)
 			{
 				goalFound = randomWalk(false);
-				if (j == MAX_STEPS -1)
+				if (j == maxSteps -1)
 				{
 					System.out.println("Max steps reached, cutting search short." + i);
 				}
 			}
-			
-			map.moveRobot(startPoint.x, startPoint.y, "N");
 		}
 		
 		printQTable();
@@ -136,7 +248,7 @@ public class MyRobot {
 
 	private void printQTable() 
 	{
-		System.out.format("|  Q  |  up  |  down  |  left  | right |\n");
+		System.out.format("Q,up,down,left,right\n");
 		
 		for(int i = qTable.length - 1; i >= 0; i--)
 		{
@@ -357,39 +469,44 @@ public class MyRobot {
 		
 		return qValue;
 	}
-
-	private void initQTable()
-	{
-		int[][] tmpMap = map.getMap();
-		qTable = new State[tmpMap.length][tmpMap[0].length];
-		
-		for(int i = 0; i < tmpMap.length; i++)
-		{
-			for(int j = 0; j < tmpMap[0].length; j++)
-			{
-				Point p = new Point(i,j);
-				State s = new State(p, map.isWall(i, j));
-				
-				qTable[i][j] = s;
-			}
-		}
-		
-		qTable[map.getGoal()[0]][map.getGoal()[1]].setGoal();
-		startPoint.x = map.getRobotLocation()[0];
-		startPoint.y = map.getRobotLocation()[1];
-	}
 	
 	private void aStarButtonActionPerformed(ActionEvent evt)
 	{
 		
 	}
 	
+	private void refresh() 
+	{
+		if(map.getMap() == null || map.getMap().length == 0)
+		{
+			return;
+		}
+		
+		initQTable();
+		_initialized = true;
+	}
+	
 	/**
 	 * @param args
 	 */
-	public static void main(String[] args) {
+	public static void main(String[] args) 
+	{
 		MyRobot robot = new MyRobot();
 		
+		while(true)
+		{
+			try {
+				Thread.sleep(1000);
+				
+				if(!robot._initialized)
+					robot.refresh();
+				else
+					break;
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 	}
 
 }
