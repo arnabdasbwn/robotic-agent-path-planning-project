@@ -1,20 +1,18 @@
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
+import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.prefs.BackingStoreException;
+import java.util.PriorityQueue;
+import java.util.Vector;
 
-import javax.swing.AbstractButton;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JSeparator;
 import javax.swing.JTextField;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 
 /**
  * 
@@ -47,34 +45,38 @@ public class MyRobot {
 	
 	private State[][] qTable;
 	private Point startPoint;
-	private JPanel botPanel;
+	private JPanel aPanel;
 	private JTextField numIterField;
 	private JTextField discountFactorField;
 	private JTextField learningRateField;
 	private JLabel learningRateFieldLabel;
 	private JLabel discountFactorFieldLabel;
 	private JLabel numIterFieldLabel;
-	private JTextField yField;
-	private JTextField xField;
-	private JLabel yFieldLabel;
-	private JLabel xFieldLabel;
+	private JTextField colField;
+	private JTextField rowField;
+	private JLabel colFieldLabel;
+	private JLabel rowFieldLabel;
 	private boolean _initialized;
 	private JTextField maxStepsField;
 	private JLabel maxStepsFieldLabel;
+	private JPanel panel;
+	private AStarState[][] aTable;
+	private PriorityQueue<AStarState> pQueue;
 	
 	public MyRobot() 
 	{
 		map = new MapGUI();
 		topPanel = new JPanel();
 		topPanel = new JPanel();
-		botPanel = new JPanel();
+		panel = new JPanel();
+		aPanel = new JPanel();
 		frame = new JFrame();
 		learningRateField = new JTextField();
 		discountFactorField = new JTextField();
 		numIterField = new JTextField();
 		maxStepsField = new JTextField();
-		xField = new JTextField();
-		yField = new JTextField();
+		rowField = new JTextField();
+		colField = new JTextField();
 		
 		learningRateField.setText("1");
 		discountFactorField.setText("0.9");
@@ -84,8 +86,8 @@ public class MyRobot {
 		learningRateFieldLabel = new JLabel("Learning Rate");
 		discountFactorFieldLabel = new JLabel("Discount Factor");
 		numIterFieldLabel = new JLabel("Number of Iterations");
-		xFieldLabel = new JLabel("X");
-		yFieldLabel = new JLabel("Y");
+		rowFieldLabel = new JLabel("Row");
+		colFieldLabel = new JLabel("Column");
 		maxStepsFieldLabel = new JLabel("Max Steps per Game");
 		
 		qLearning = new JButton("Start");
@@ -113,7 +115,7 @@ public class MyRobot {
             }
         });
 		
-		topPanel.setLayout(new GridLayout(4,4));
+		topPanel.setLayout(new GridLayout(3,4));
 		topPanel.setBorder(BorderFactory.createTitledBorder("Q Learning"));
 		topPanel.add(qLearning);
 		topPanel.add(new JLabel());
@@ -127,21 +129,23 @@ public class MyRobot {
 		topPanel.add(numIterField);
 		topPanel.add(maxStepsFieldLabel);
 		topPanel.add(maxStepsField);
-		topPanel.add(xFieldLabel);
-		topPanel.add(xField);
-		topPanel.add(yFieldLabel);
-		topPanel.add(yField);
+
+		aPanel.setBorder(BorderFactory.createTitledBorder("A* Path Planning"));
+		aPanel.add(aStar);
 		
-		botPanel.setBorder(BorderFactory.createTitledBorder("A* Path Planning"));
-		botPanel.add(aStar);
+		panel.setLayout(new GridLayout(2,2));
+		panel.add(rowFieldLabel);
+		panel.add(rowField);
+		panel.add(colFieldLabel);
+		panel.add(colField);
 		
-		frame.setLayout(new GridLayout(2,1));
-		frame.add(topPanel);
-		frame.add(botPanel);
+		frame.setLayout(new BorderLayout());
+		frame.add(topPanel, BorderLayout.NORTH);
+		frame.add(aPanel, BorderLayout.CENTER);
+		frame.add(panel, BorderLayout.SOUTH);
 		
 		frame.pack();
 		frame.setVisible(true);
-		
 	}
 	
 	private void initQTable()
@@ -153,7 +157,7 @@ public class MyRobot {
 		{
 			for(int j = 0; j < tmpMap[0].length; j++)
 			{
-				Point p = new Point(i,j);
+				Point p = new Point(j,i);
 				State s = new State(p, map.isWall(i, j));
 				
 				qTable[i][j] = s;
@@ -161,18 +165,21 @@ public class MyRobot {
 		}
 		
 		qTable[map.getGoal()[0]][map.getGoal()[1]].setGoal();
-		startPoint.x = map.getRobotLocation()[0];
-		startPoint.y = map.getRobotLocation()[1];
-		xField.setText(""+startPoint.x);
-		yField.setText(""+startPoint.y);
-		xField.repaint();
-		yField.repaint();
+	}
+
+	private void initialize() {
+		startPoint.y = map.getRobotLocation()[0];
+		startPoint.x = map.getRobotLocation()[1];
+		rowField.setText(""+startPoint.y);
+		colField.setText(""+startPoint.x);
+		rowField.repaint();
+		colField.repaint();
 	}
 
 	
 	private void qLearningGreedyButtonActionPerformed(ActionEvent evt)
 	{
-		if(!updateQlearningParameters())
+		if(!updatelearningParameters())
 			return;
 		
 		if(map.getMap() == null || map.getMap().length == 0)
@@ -181,7 +188,7 @@ public class MyRobot {
 			return;
 		}
 		
-		map.moveRobot(startPoint.x, startPoint.y, "N");
+		map.moveRobot(startPoint.y, startPoint.x, "N");
 		
 		boolean goalFound = false;
 		
@@ -200,11 +207,11 @@ public class MyRobot {
 	
 	private void qLearningButtonActionPerformed(ActionEvent evt)
 	{
-		if(updateQlearningParameters())
+		if(updatelearningParameters())
 			qlearning();
 	}
 
-	private boolean updateQlearningParameters() {
+	private boolean updatelearningParameters() {
 		numIter = Integer.valueOf(numIterField.getText());
 		discountFactor = Float.valueOf(discountFactorField.getText());
 		learningRate = Float.valueOf(learningRateField.getText());
@@ -212,8 +219,8 @@ public class MyRobot {
 		
 		try
 		{
-			startPoint.x = Integer.valueOf(xField.getText());
-			startPoint.y = Integer.valueOf(yField.getText());
+			startPoint.y = Integer.valueOf(rowField.getText());
+			startPoint.x = Integer.valueOf(colField.getText());
 		}
 		catch(NumberFormatException ex)
 		{
@@ -230,7 +237,7 @@ public class MyRobot {
 		
 		for(int i = 0; i < numIter; i++)
 		{
-			map.moveRobot(startPoint.x, startPoint.y, "N");
+			map.moveRobot(startPoint.y, startPoint.x, "N");
 			
 			goalFound = false;
 			for(int j = 0; (j < maxSteps) && !goalFound; j++)
@@ -338,8 +345,8 @@ public class MyRobot {
 			}
 		}
 		
-		qTable[s.point.x][s.point.y] = s;
-		map.moveRobot(next.point.x, next.point.y, angle);
+		qTable[s.point.y][s.point.x] = s;
+		map.moveRobot(next.point.y, next.point.x, angle);
 		return next.isGoal();
 	}
 
@@ -449,8 +456,8 @@ public class MyRobot {
 			}
 		}
 		
-		qTable[s.point.x][s.point.y] = s;
-		map.moveRobot(next.point.x, next.point.y, angle);
+		qTable[s.point.y][s.point.x] = s;
+		map.moveRobot(next.point.y, next.point.x, angle);
 		return next.isGoal();
 	}
 	
@@ -472,9 +479,151 @@ public class MyRobot {
 	
 	private void aStarButtonActionPerformed(ActionEvent evt)
 	{
+		updatelearningParameters();
+		
+		map.moveRobot(startPoint.y, startPoint.x, "N");
+		
+		restartAStar();
+		
+		AStarState s = aTable[startPoint.y][startPoint.x];
+		
+		while(s != null && !s.isGoal())
+		{
+			System.out.println(s.point);
+			s.visited = true;
+			
+			// CHECK UP
+			if(s.point.y + 1 < aTable.length && !aTable[s.point.y + 1][s.point.x].wall && !aTable[s.point.y + 1][s.point.x].visited)
+			{
+				AStarState up = aTable[s.point.y + 1][s.point.x];
+				
+				if(up.f == 0)
+				{
+					computeAStarValues(up);
+					up.previous = s;
+					pQueue.add(up);	
+				}
+			}
+			
+			// CHECK DOWN
+			if(s.point.y - 1 >= 0 && !aTable[s.point.y - 1][s.point.x].wall && !aTable[s.point.y - 1][s.point.x].visited)
+			{
+				AStarState down = aTable[s.point.y - 1][s.point.x];
+				
+				if(down.f == 0)
+				{
+					computeAStarValues(down);
+					down.previous = s;
+					pQueue.add(down);
+				}
+			}
+			
+			// CHECK LEFT
+			if(s.point.x - 1 >= 0 && !aTable[s.point.y][s.point.x - 1].wall && !aTable[s.point.y][s.point.x - 1].visited)
+			{
+				AStarState left = aTable[s.point.y][s.point.x - 1];
+				
+				if(left.f == 0)
+				{
+					computeAStarValues(left);
+					left.previous = s;
+					pQueue.add(left);
+				}
+			}
+			
+			// CHECK RIGHT
+			if(s.point.x + 1 < aTable[0].length && !aTable[s.point.y][s.point.x + 1].wall && !aTable[s.point.y][s.point.x + 1].visited)
+			{
+				AStarState right = aTable[s.point.y][s.point.x + 1];
+				if(right.f == 0)
+				{
+					computeAStarValues(right);
+					right.previous = s;
+					pQueue.add(right);
+				}
+			}
+			
+			s = pQueue.poll();
+		}
+		
+		if(s != null)
+		{
+			AStarState ptr = s; 
+			Vector<Point> solution = new Vector<Point>();
+			
+			solution.add(new Point(ptr.point.x, ptr.point.y));
+	
+			while(ptr.previous != null)
+			{
+				solution.add(new Point(ptr.previous.point.x, ptr.previous.point.y));
+				ptr = ptr.previous;
+			}
+			
+			for(int i = solution.size()-1; i >= 0; i--)
+			{
+				try {
+					Thread.sleep(1000);
+					map.moveRobot(solution.get(i).y, solution.get(i).x, "N");
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+				
+			}
+		}
+		else
+		{
+			System.out.println("NO PATH!!!");
+		}
 		
 	}
+
+	private void restartAStar() 
+	{
+		pQueue.clear();
+		for(int i = 0; i < aTable.length; i++)
+		{
+			for(int j = 0; j < aTable[0].length; j++)
+			{
+				aTable[i][j].f = 0;
+				aTable[i][j].g = 0;
+				aTable[i][j].h = 0;
+				aTable[i][j].visited = false;
+				aTable[i][j].previous = null;
+			}
+		}
+	}
 	
+	private void computeAStarValues(AStarState currentState) 
+	{	
+		AStarState goal = aTable[map.getGoal()[0]][map.getGoal()[1]];
+		
+		// Computer H, G, F
+		currentState.h = Math.sqrt(Math.pow(goal.point.y - currentState.point.y, 2) 
+								+  Math.pow(goal.point.x - currentState.point.x, 2));
+		currentState.g = currentState.previous == null ? 0 : currentState.previous.g + 1; 
+		currentState.f = currentState.g + currentState.h;
+	}
+
+	private void initAStar() 
+	{
+		int[][] tmpMap = map.getMap();
+		aTable = new AStarState[tmpMap.length][tmpMap[0].length];
+		
+		for(int i = 0; i < tmpMap.length; i++)
+		{
+			for(int j = 0; j < tmpMap[0].length; j++)
+			{
+				Point p = new Point(j,i);
+				AStarState s = new AStarState(p, map.isWall(i, j));
+				
+				aTable[i][j] = s;
+			}
+		}
+		
+		aTable[map.getGoal()[0]][map.getGoal()[1]].setGoal();
+		pQueue = new PriorityQueue<AStarState>();
+	}
+
 	private void refresh() 
 	{
 		if(map.getMap() == null || map.getMap().length == 0)
@@ -483,6 +632,8 @@ public class MyRobot {
 		}
 		
 		initQTable();
+		initAStar();
+		initialize();
 		_initialized = true;
 	}
 	
@@ -491,6 +642,18 @@ public class MyRobot {
 	 */
 	public static void main(String[] args) 
 	{
+		try {
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+		} catch (ClassNotFoundException e1) {
+			e1.printStackTrace();
+		} catch (InstantiationException e1) {
+			e1.printStackTrace();
+		} catch (IllegalAccessException e1) {
+			e1.printStackTrace();
+		} catch (UnsupportedLookAndFeelException e1) {
+			e1.printStackTrace();
+		}
+		
 		MyRobot robot = new MyRobot();
 		
 		while(true)
@@ -503,7 +666,6 @@ public class MyRobot {
 				else
 					break;
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
