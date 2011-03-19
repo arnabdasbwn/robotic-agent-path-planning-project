@@ -3,6 +3,7 @@
 	<name>RAH-HW2-AStarContinuous</name>
 	<comment></comment>
 	<projects>
+		<project>RAH-HW2-external</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
