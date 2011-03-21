@@ -1,0 +1,3 @@
+radians degrees
+
+collision rays collided ... Required new bitmask for each agent.

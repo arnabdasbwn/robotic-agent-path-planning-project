@@ -1,0 +1,23 @@
+List of things to do (No particular order)
+
+Major TODO's
+1) Fix ray gitter
+2) Fix Ralph bumping into NPC gitter
+3) Fix path smoothening
+4) Add endgame
+5) Fix nearest node selection for A*
+6) Call A* when a collision between NPC and wall happens during retrieveKey
+7) Fix walking through walls/floor problem
+8) Figure out what room3 NPC's problem is.
+
+Minor TODO's
+1) Merge this in with the issue tracker
+2) Place keys in upper right hand corner when grabbed.
+
+Aesthetic TODO's
+1) Map a key to toggle debug output
+2) Make map into a cube!
+3) Add sound effects
+4) Hook up wii-mote
+5) Make Ralph teeter (He has an off balance animation) when NPC takes his key.
+6) Make Eve teeter when ralph leaves room with key. (maybe, if Joe likes the idea.)
