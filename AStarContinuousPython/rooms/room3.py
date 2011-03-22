@@ -1,3 +1,5 @@
+from waypoint import Waypoint
+
 coords = [ (143, 72),
 		 (144, 47),
 		 (153, -75),

@@ -10,5 +10,6 @@
 <pydev_pathproperty name="org.python.pydev.PROJECT_EXTERNAL_SOURCE_PATH">
 <path>C:\Panda3D-1.6.2</path>
 <path>C:\Panda3D-1.6.2\bin</path>
+<path>C:\Panda3D-1.6.2\bin\libpandaexpress.dll</path>
 </pydev_pathproperty>
 </pydev_project>

@@ -41,8 +41,8 @@ class World(DirectObject):
     def __init__(self):
         DirectObject.__init__(self)
         
-        self.pathSmoothening = True
-        self.showWaypoints = False
+        self.pathSmoothening = False
+        self.showWaypoints = True
         self.showCollisions = False
         
         self.accept("escape", sys.exit)
@@ -52,10 +52,8 @@ class World(DirectObject):
         self.__setupGravity()
         self.__setupLevel()
         self.__setupMainAgent()
-#        self.__setupOtherAgents()
         self.__setupNPCs()
         self.__setupCamera()
-        self.__setupRandomClutter()
         #Many things within the NPC are dependant on the level it is in.
 #        self.__NPC.setKeyAndNestReference(self.keyNest1, self.room1Key)
 #        self.__room2NPC.setKeyAndNestReference(self.keyNest2, self.room2Key)
@@ -67,81 +65,17 @@ class World(DirectObject):
         self.setKeymap()
         self.room1Key = "models/blueKeyHUD.png"
         self.__mainAgent.setCurrentKey(self.room1Key)
-        
-        # This is for the HUD
-#        self.keyImages = {
-#              self.room1Key:"models/blueKeyHUD.png"}
-#        self.room1KeyInHUD = False
-#        self.room2KeyInHUD = False
-#        self.room3KeyInHUD = False
-#        self.blueKeyImage = OnscreenImage(image = self.keyImages[self.room1Key], pos = (0.7, 0, 0.9), scale = (0.0451, 0, 0.1))
-#        self.blueKeyImage.setTransparency(TransparencyAttrib.MAlpha)
-#        self.blueKeyImage.hide()
+        self.__NPC.pathSmoothening = self.pathSmoothening
 
+        if(self.showWaypoints):
+            print("Showing waypoints")
+            for w in self.room1waypoints:
+                w.draw()
+            for w in self.room2waypoints:
+                w.draw()
+            for w in self.room3waypoints:
+                w.draw()
         
-
-    def reComputeHUD(self, room):
-       """
-       reComputeHUD is called when the player leaves a room and enters another room.
-       The HUD shows the images of the keys that the player has in his backpack,
-       but not the key to the current room.
-       """
-##       assert False, "add the hack to make sure she doesn't fall through the ground"
-#       if self.__mainAgent.hasKey(self.room1Key) and room is not self.room1:
-#          #self.redKeyImage.show()
-#          self.room1Key.reparentTo(base.cam)
-#          self.room1Key.setScale(render, 1.25)
-#          self.room1Key.setP(base.cam, 0)
-#          self.room1Key.setPos(base.cam.getX(base.cam) + 2.1, base.cam.getY(base.cam) + 10, base.cam.getZ(base.cam) + 2.1)
-#          self.room1KeyInHUD = True
-#       elif self.__mainAgent.hasKey(self.room1Key) and room is self.room1:
-#          rightHand = self.__mainAgent.actor.exposeJoint(None, 'modelRoot', 'RightHand')
-#          self.room1Key.reparentTo(rightHand)
-#          self.room1Key.setPosHpr(.11,-1.99,.06, 0,-90,0)
-#          self.room1Key.setScale(render, 10)
-#          self.room1Key.setTexScale(TextureStage.getDefault(), 1)
-#          self.room1KeyInHUD = False
-#          self.redKeyImage.hide()
-#       else:
-#          self.redKeyImage.hide()
-#          self.room1KeyInHUD = False
-#
-#       if self.__mainAgent.hasKey(self.room2Key) and room is not self.room2:
-#          #self.blueKeyImage.show()
-#          self.room2Key.reparentTo(base.cam)
-#          self.room2Key.setScale(render, 1.25)
-#          self.room2Key.setP(base.cam, 0)
-#          self.room2Key.setPos(base.cam.getX(base.cam) + 2.5, base.cam.getY(base.cam) + 10, base.cam.getZ(base.cam) + 2.1)
-#          self.room2KeyInHUD = True
-#       elif self.__mainAgent.hasKey(self.room2Key) and room is self.room2:
-#          rightHand = self.__mainAgent.actor.exposeJoint(None, 'modelRoot', 'RightHand')
-#          self.room2Key.reparentTo(rightHand)
-#          self.room2Key.setPosHpr(.11,-1.99,.06, 0,-90,0)
-#          self.room2Key.setScale(render, 10)
-#          self.room2Key.setTexScale(TextureStage.getDefault(), 1)
-#          self.room2KeyInHUD = False
-#          self.blueKeyImage.hide()
-#       elif (self.blueKeyImage != None):
-#          self.blueKeyImage.hide()
-#          self.room2KeyInHUD = False
-#
-#       if self.__mainAgent.hasKey(self.room3Key) and room is not self.room3:
-#          #self.greenKeyImage.show()
-#          self.room3Key.reparentTo(base.cam)
-#          self.room3Key.setScale(render, 1.25)
-#          self.room3Key.setP(base.cam, 0)
-#          self.room3Key.setPos(base.cam.getX(base.cam) + 3.0, base.cam.getY(base.cam) + 10, base.cam.getZ(base.cam) + 2.1)
-#          self.room3KeyInHUD = True
-#       elif self.__mainAgent.hasKey(self.room3Key) and room is self.room3:
-#          rightHand = self.__mainAgent.actor.exposeJoint(None, 'modelRoot', 'RightHand')
-#          self.room3Key.reparentTo(rightHand)
-#          self.room3Key.setPosHpr(.11,-1.99,.06, 0,-90,0)
-#          self.room3Key.setScale(render, 10)
-#          self.room3Key.setTexScale(TextureStage.getDefault(), 1)
-#          self.room3KeyInHUD = False
-#          self.greenKeyImage.hide()
-#       elif (self.greenKeyImage != None):
-#          self.greenKeyImage.hide()
 
     def __setupCollisions(self):
         self.cTrav = CollisionTraverser("traverser")
@@ -187,51 +121,6 @@ class World(DirectObject):
 #        skyBox.setScale(10)
 #        skyBox.reparentTo(render)
         
-    def animateItems(self, task):
-#        if(not (self.__mainAgent.hasKey(self.room1Key) or self.__NPC.hasKey()) or self.room1KeyInHUD):
-#            self.rotate(self.room1Key)
-#        if(not self.__mainAgent.hasKey(self.room2Key) and not self.__room2NPC.hasKey() or self.room2KeyInHUD):
-#            self.rotate(self.room2Key)
-#        if(not self.__mainAgent.hasKey(self.room3Key) and not self.__room3NPC.hasKey() or self.room3KeyInHUD):
-#            self.rotate(self.room3Key)
-        return Task.cont
-
-    hasAllKeys = False
-    playerWasKilledByNPC1 = False
-    playerWasKilledByNPC2 = False
-    playerWasKilledByNPC3 = False
-    #gameOver = False
-    fadeCounter = 200
-    def checkGameState(self, task, message = None):
-        goodEndingText = OnscreenText(text="", style=1, fg=(0,0,1,0.01),
-                            pos=(0,.4), align=TextNode.ACenter, scale = .25, mayChange = True)
-        BaadEndingText = OnscreenText(text="", style=1, fg=(1,0,0,0.01),
-                            pos=(0,.4), align=TextNode.ACenter, scale = .25, mayChange = True)
-        if(self.fadeCounter > 0):
-            if(self.__mainAgent.hasKey(self.room1Key) and self.__mainAgent.hasKey(self.room2Key) and self.__mainAgent.hasKey(self.room3Key)):
-                self.hasAllKeys = True
-                #goodEndingText.setText("You have all 3 keys!")
-            if(self.hasAllKeys):
-                goodEndingText.setText("You have all 3 keys!")
-            if(PathFinder.distance(self.__mainAgent, self.__NPC) < 5 and self.__NPC.getState() != "returnKey"):
-                if(not self.__mainAgent.hasKey(self.room1Key)):
-                    self.playerWasKilledByNPC1 = True
-            if(self.playerWasKilledByNPC1):
-                self.fadeCounter = self.fadeCounter - 1
-                BaadEndingText.setText("Killed by Eve clone Alpha")
-            if(PathFinder.distance(self.__mainAgent, self.__room2NPC) < 5 and self.__room2NPC.getState() != "returnKey"):
-                if(not self.__mainAgent.hasKey(self.room2Key)):
-                    self.playerWasKilledByNPC2 = True
-            if(self.playerWasKilledByNPC2):
-                self.fadeCounter = self.fadeCounter - 1
-                BaadEndingText.setText("Killed by Eve clone Beta")
-            if(PathFinder.distance(self.__mainAgent, self.__room3NPC) < 5 and self.__room3NPC.getState() != "returnKey"):
-                if(not self.__mainAgent.hasKey(self.room3Key)):
-                    self.playerWasKilledByNPC3 = True
-            if(self.playerWasKilledByNPC3):
-                self.fadeCounter = self.fadeCounter - 1
-                BaadEndingText.setText("Killed by Eve clone Gamma")
-        return Task.cont
     
     currentAngle = 0
     def rotate(self, someItem):
@@ -272,21 +161,7 @@ class World(DirectObject):
         self.room2.reparentTo(level1)
         self.room2.setY(self.room1, -20)
         self.room2.find("**/Cube*;+h").setTag("Room", "2")
-        
-#        self.keyNest2 = self.room2.attachNewNode("key nest 2")
-#        keyNest.instanceTo(self.keyNest2)
-#        self.keyNest2.setPos(-2.5, -2.5, 0.05)
-#        
-#        self.room2Key = loader.loadModel("models/blueKey")
-#        self.room2Key.findTexture("*").setMinfilter(Texture.FTLinearMipmapLinear)
-#        self.room2Key.reparentTo(self.keyNest2)
-#        self.room2Key.setScale(render, 10)
-#        self.room2Key.setTexScale(TextureStage.getDefault(), 0.1)
-        
-        # Jim thinks there should be a comment here
-        # he also thinks that the above comment is very useful
-        # TODO: fix this hack by re-creating room3 in blender
-        
+                
         execfile("rooms/room3.py")
         
         room3Model = loader.loadModel("rooms/room3")
@@ -377,10 +252,8 @@ class World(DirectObject):
 #                
         
         self.accept("ralph collision node-into-room1Floor", orderNPC, ["ralph has entered room 1"])
-#        self.accept("ralph collision node-out-room1Floor", orderNPC, ["ralph has left room 1"])
-#        self.accept("ralph collision node-into-room2Floor", orderNPC, ["ralph has entered room 2"])
-#        self.accept("ralph collision node-out-room2Floor", orderNPC, ["ralph has left room 2"])
-#        self.accept("ralph collision node-into-room3Floor", orderNPC, ["ralph has entered room 3"])
+        self.accept("ralph collision node-into-room2Floor", orderNPC, ["ralph has entered room 2"])
+        self.accept("ralph collision node-into-room3Floor", orderNPC, ["ralph has entered room 3"])
 #        self.accept("ralph collision node-out-room3Floor", orderNPC, ["ralph has left room 3"])
 #        self.accept("Eve 1 collision node-into-Cube1", orderNPC, ["NPC1 bumped into wall"])
 #        self.accept("Eve 2 collision node-into-Cube2", orderNPC, ["NPC2 bumped into wall"])
@@ -409,7 +282,7 @@ class World(DirectObject):
                             collisionTraverser = self.cTrav)
         # Make it visible
         self.__mainAgent.reparentTo(render)
-        self.__mainAgent.setPos(31, 35, 50)
+        self.__mainAgent.setPos(-20, -210, 0)
         self.gate.find("**/Cube;+h").setCollideMask(~self.__mainAgent.collisionMask)
         
     __targetCount = 0
@@ -438,8 +311,8 @@ class World(DirectObject):
                                 massKg = 35.0,
                                 collisionHandler = self.physicsCollisionHandler,
                                 collisionTraverser = self.cTrav,
-                                waypoints = self.room1waypoints)
-        self.__NPC.setFluidPos(render, -75, -75, 0)
+                                waypoints = self.room2waypoints)
+        self.__NPC.setFluidPos(render, 20, -190, 0)
         self.__NPC.setScale(render, 1)
         self.__NPC.setPlayer(self.__mainAgent)
 
@@ -553,7 +426,6 @@ class World(DirectObject):
 #        taskMgr.add(self.__room2NPC.act, "actTask")
 #        taskMgr.add(self.__room3NPC.act, "actTask")
 #        taskMgr.add(self.checkGameState, "gameStateTask")
-#        taskMgr.add(self.animateItems, "animateItemsTask")
         #taskMgr.add(self.processKey, "processKeyTask")
 
         # This is for path finding
