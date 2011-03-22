@@ -25,10 +25,10 @@ class Player(Agent, DirectObject):
     playerKeys = []
     
     def setCurrentKey(self, key):
-        if self.currentKey:
-            self.currentKey.detachNode()
-        if key:
-            key.reparentTo(self.rightHand)
+#        if self.currentKey:
+#            self.currentKey.detachNode()
+#        if key:
+#            key.reparentTo(self.rightHand)
         self.currentKey = key
     
     def addKey(self, key):

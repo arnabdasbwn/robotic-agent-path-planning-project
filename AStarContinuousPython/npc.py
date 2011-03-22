@@ -247,15 +247,15 @@ class NPC(Agent, DirectObject):
             if self.player != None:
                 if self.distanceToPlayer() < self.radarLength:
                     self.handleTransition("withinRange")
-                if (self.keyNest.getPos(render) - self.player.getPos(render)).length() < 5:#if player collided with keyNest
-                    self.handleTransition("keyTaken")
+#                if (self.keyNest.getPos(render) - self.player.getPos(render)).length() < 5:#if player collided with keyNest
+#                    self.handleTransition("keyTaken")
         if self.npcState == "seek":
             if self.currentTarget:
                 self.seek(self.currentTarget.getPos(render))
             if self.distanceToPlayer() > self.radarLength:
                 self.handleTransition("outOfRange")
-            if (self.keyNest.getPos(render) - self.player.getPos(render)).length() < 5:#if player collided with key
-                self.handleTransition("keyTaken")
+#            if (self.keyNest.getPos(render) - self.player.getPos(render)).length() < 5:#if player collided with key
+#                self.handleTransition("keyTaken")
         elif self.npcState == "retriveKey":
             if self.currentTarget:
                 self.seek(self.currentTarget.getPos(render))
@@ -279,16 +279,16 @@ class NPC(Agent, DirectObject):
         self.player = player
         
     def handleTransition(self, transition, entry = None):
-        #print(self.name + "Says: Recieved transition: " + transition)
+        print(self.name + "Says: Recieved transition: " + transition)
 
         if(self.npcState == "wander"):
             if(transition == "keyTaken"):
                 #print(self.name + " Says: Changing from wander to retriveKey")
                 self.bestPath = PathFinder.AStar(self, self.player, self.waypoints)
-                self.player.setCurrentKey(self.key)
-                self.key.setScale(render, 10)
-                self.key.setTexScale(TextureStage.getDefault(), 1)
-                self.key.setPosHpr(.11,-1.99,.06, 0,-90,0)
+#                self.player.setCurrentKey(self.key)
+#                self.key.setScale(render, 10)
+#                self.key.setTexScale(TextureStage.getDefault(), 1)
+#                self.key.setPosHpr(.11,-1.99,.06, 0,-90,0)
 ##                self.key.flattenLight()
                 #self.drawBestPath                
                 #print("AStar in transition from wander to return retrive = " + str(self.bestPath))
@@ -313,26 +313,27 @@ class NPC(Agent, DirectObject):
                 pass
         elif(self.npcState == "retriveKey"):
             if(transition == "gotKey"):
-                #print(self.name + " Says: Changing from retriveKey to returnKey")
-                rightHand = self.actor.exposeJoint(None, 'modelRoot', 'RightHand')
-                self.key.reparentTo(rightHand)
-                self.key.setPosHpr(.11,-1.99,.06, 0,-90,0)
-                self.key.setScale(render, 10)
-                self.key.setTexScale(TextureStage.getDefault(), 1)
-##                self.key.flattenLight()
-                #print("Changing from gotKey to returnKey")
-                self.bestPath = PathFinder.AStar(self, self.keyNest, self.waypoints)
-                #print("AStar in transition from gotKey to return key = " + str(self.bestPath))
-                
-                #print("Does player STILL have the key?")
-                #print(self.player.hasKey(self.key))
-                self.player.removeKey(self.key)
-                self.keyInHand = True
-                self.npcState = "returnKey"
-            elif(transition == "playerLeftRoom"):
-                #print(self.name + " Says: Changing from retriveKey to playerAbsent")
-                self.npcState = "playerAbsent"
-            elif(transition == "bumpedIntoWall"):
+                self.npcState = "Stop"
+#                #print(self.name + " Says: Changing from retriveKey to returnKey")
+#                rightHand = self.actor.exposeJoint(None, 'modelRoot', 'RightHand')
+#                self.key.reparentTo(rightHand)
+#                self.key.setPosHpr(.11,-1.99,.06, 0,-90,0)
+#                self.key.setScale(render, 10)
+#                self.key.setTexScale(TextureStage.getDefault(), 1)
+###                self.key.flattenLight()
+#                #print("Changing from gotKey to returnKey")
+#                self.bestPath = PathFinder.AStar(self, self.keyNest, self.waypoints)
+#                #print("AStar in transition from gotKey to return key = " + str(self.bestPath))
+#                
+#                #print("Does player STILL have the key?")
+#                #print(self.player.hasKey(self.key))
+#                self.player.removeKey(self.key)
+#                self.keyInHand = True
+#                self.npcState = "returnKey"
+#            elif(transition == "playerLeftRoom"):
+#                #print(self.name + " Says: Changing from retriveKey to playerAbsent")
+#                self.npcState = "playerAbsent"
+            if(transition == "bumpedIntoWall"):
                 #print(self.name + " Says: Oops! Bumped into wall, recalculating A*")
                 self.bestPath = PathFinder.AStar(self, self.player, self.waypoints)
                 
@@ -395,6 +396,8 @@ class NPC(Agent, DirectObject):
                     #print(self.name + " Says: Changing from playerAbsent to wander")
                     self.currentTarget = self.player
                     self.npcState = "wander"
+        elif(self.npcState == "Stop"):
+            self.stop()
         else:#Joe pleas don't comment out the else prints. I need to know any time this happens
             print("Current state undefined for handleTransition" + self.npcState)
                 

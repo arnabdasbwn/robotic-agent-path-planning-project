@@ -26,6 +26,7 @@ from pandac.PandaModules import TextureStage
 from pandac.PandaModules import TransparencyAttrib
 from pandac.PandaModules import Vec3
 from npc import NPC
+from player import Player
 import sys
 from direct.task import Task
 from direct.gui.OnscreenText import OnscreenText
@@ -50,13 +51,13 @@ class World(DirectObject):
         self.__setupCollisions()
         self.__setupGravity()
         self.__setupLevel()
-#        self.__setupMainAgent()
+        self.__setupMainAgent()
 #        self.__setupOtherAgents()
         self.__setupNPCs()
         self.__setupCamera()
         self.__setupRandomClutter()
         #Many things within the NPC are dependant on the level it is in.
-#        self.__room1NPC.setKeyAndNestReference(self.keyNest1, self.room1Key)
+#        self.__NPC.setKeyAndNestReference(self.keyNest1, self.room1Key)
 #        self.__room2NPC.setKeyAndNestReference(self.keyNest2, self.room2Key)
         #self.__room2NPC.handleTransition("playerLeftRoom")
 #        self.__room3NPC.setKeyAndNestReference(self.keyNest3, self.room3Key)
@@ -64,7 +65,9 @@ class World(DirectObject):
         self.__setupTasks()
         
         self.setKeymap()
-
+        self.room1Key = "models/blueKeyHUD.png"
+        self.__mainAgent.setCurrentKey(self.room1Key)
+        
         # This is for the HUD
 #        self.keyImages = {
 #              self.room1Key:"models/blueKeyHUD.png"}
@@ -185,7 +188,7 @@ class World(DirectObject):
 #        skyBox.reparentTo(render)
         
     def animateItems(self, task):
-#        if(not (self.__mainAgent.hasKey(self.room1Key) or self.__room1NPC.hasKey()) or self.room1KeyInHUD):
+#        if(not (self.__mainAgent.hasKey(self.room1Key) or self.__NPC.hasKey()) or self.room1KeyInHUD):
 #            self.rotate(self.room1Key)
 #        if(not self.__mainAgent.hasKey(self.room2Key) and not self.__room2NPC.hasKey() or self.room2KeyInHUD):
 #            self.rotate(self.room2Key)
@@ -210,7 +213,7 @@ class World(DirectObject):
                 #goodEndingText.setText("You have all 3 keys!")
             if(self.hasAllKeys):
                 goodEndingText.setText("You have all 3 keys!")
-            if(PathFinder.distance(self.__mainAgent, self.__room1NPC) < 5 and self.__room1NPC.getState() != "returnKey"):
+            if(PathFinder.distance(self.__mainAgent, self.__NPC) < 5 and self.__NPC.getState() != "returnKey"):
                 if(not self.__mainAgent.hasKey(self.room1Key)):
                     self.playerWasKilledByNPC1 = True
             if(self.playerWasKilledByNPC1):
@@ -336,51 +339,52 @@ class World(DirectObject):
     
         
         def orderNPC(parameters, entry):
-            
-            if(parameters == "ralph has entered room 1"):
-                self.__room1NPC.handleTransition("playerEnteredRoom")
-                self.reComputeHUD(self.room1)
-                if self.__mainAgent.hasKey(self.room1Key):
-                    self.__mainAgent.setCurrentKey(self.room1Key)
-            elif(parameters == "ralph has left room 1"):
-                self.__room1NPC.handleTransition("playerLeftRoom")
-                if self.__mainAgent.hasKey(self.room1Key):
-                    self.__mainAgent.setCurrentKey(None)
-            elif(parameters == "ralph has entered room 2"):
-                self.__room2NPC.handleTransition("playerEnteredRoom")
-                self.reComputeHUD(self.room2)
-                if self.__mainAgent.hasKey(self.room2Key):
-                    self.__mainAgent.setCurrentKey(self.room2Key)
-            elif(parameters == "ralph has left room 2"):
-                self.__room2NPC.handleTransition("playerLeftRoom")
-                if self.__mainAgent.hasKey(self.room2Key):
-                    self.__mainAgent.setCurrentKey(None)
-            elif(parameters == "ralph has entered room 3"):
-                self.__room3NPC.handleTransition("playerEnteredRoom")
-                if self.__mainAgent.hasKey(self.room3Key):
-                    self.__mainAgent.setCurrentKey(self.room3Key)
-                self.reComputeHUD(self.room3)
-            elif(parameters == "ralph has left room 3"):
-                self.__room3NPC.handleTransition("playerLeftRoom")
-                if self.__mainAgent.hasKey(self.room3Key):
-                    self.__mainAgent.setCurrentKey(None)
-            elif(parameters == "NPC1 bumped into wall"):
-                self.__room1NPC.handleTransition("bumpedIntoWall")
-            elif(parameters == "NPC2 bumped into wall"):
-                self.__room2NPC.handleTransition("bumpedIntoWall")
-            elif(parameters == "NPC3 bumped into wall"):
-                self.__room3NPC.handleTransition("bumpedIntoWall")
-                
+            self.__NPC.handleTransition("playerEnteredRoom")
+            self.__NPC.handleTransition("keyTaken")
+#            if(parameters == "ralph has entered room 1"):
+#                self.__NPC.handleTransition("playerEnteredRoom")
+#                self.reComputeHUD(self.room1)
+#                if self.__mainAgent.hasKey(self.room1Key):
+#                    self.__mainAgent.setCurrentKey(self.room1Key)
+#            elif(parameters == "ralph has left room 1"):
+#                self.__NPC.handleTransition("playerLeftRoom")
+#                if self.__mainAgent.hasKey(self.room1Key):
+#                    self.__mainAgent.setCurrentKey(None)
+#            elif(parameters == "ralph has entered room 2"):
+#                self.__room2NPC.handleTransition("playerEnteredRoom")
+#                self.reComputeHUD(self.room2)
+#                if self.__mainAgent.hasKey(self.room2Key):
+#                    self.__mainAgent.setCurrentKey(self.room2Key)
+#            elif(parameters == "ralph has left room 2"):
+#                self.__room2NPC.handleTransition("playerLeftRoom")
+#                if self.__mainAgent.hasKey(self.room2Key):
+#                    self.__mainAgent.setCurrentKey(None)
+#            elif(parameters == "ralph has entered room 3"):
+#                self.__room3NPC.handleTransition("playerEnteredRoom")
+#                if self.__mainAgent.hasKey(self.room3Key):
+#                    self.__mainAgent.setCurrentKey(self.room3Key)
+#                self.reComputeHUD(self.room3)
+#            elif(parameters == "ralph has left room 3"):
+#                self.__room3NPC.handleTransition("playerLeftRoom")
+#                if self.__mainAgent.hasKey(self.room3Key):
+#                    self.__mainAgent.setCurrentKey(None)
+#            elif(parameters == "NPC1 bumped into wall"):
+#                self.__NPC.handleTransition("bumpedIntoWall")
+#            elif(parameters == "NPC2 bumped into wall"):
+#                self.__room2NPC.handleTransition("bumpedIntoWall")
+#            elif(parameters == "NPC3 bumped into wall"):
+#                self.__room3NPC.handleTransition("bumpedIntoWall")
+#                
         
         self.accept("ralph collision node-into-room1Floor", orderNPC, ["ralph has entered room 1"])
-        self.accept("ralph collision node-out-room1Floor", orderNPC, ["ralph has left room 1"])
-        self.accept("ralph collision node-into-room2Floor", orderNPC, ["ralph has entered room 2"])
-        self.accept("ralph collision node-out-room2Floor", orderNPC, ["ralph has left room 2"])
-        self.accept("ralph collision node-into-room3Floor", orderNPC, ["ralph has entered room 3"])
-        self.accept("ralph collision node-out-room3Floor", orderNPC, ["ralph has left room 3"])
-        self.accept("Eve 1 collision node-into-Cube1", orderNPC, ["NPC1 bumped into wall"])
-        self.accept("Eve 2 collision node-into-Cube2", orderNPC, ["NPC2 bumped into wall"])
-        self.accept("Eve 3 collision node-into-Cube3", orderNPC, ["NPC3 bumped into wall"])
+#        self.accept("ralph collision node-out-room1Floor", orderNPC, ["ralph has left room 1"])
+#        self.accept("ralph collision node-into-room2Floor", orderNPC, ["ralph has entered room 2"])
+#        self.accept("ralph collision node-out-room2Floor", orderNPC, ["ralph has left room 2"])
+#        self.accept("ralph collision node-into-room3Floor", orderNPC, ["ralph has entered room 3"])
+#        self.accept("ralph collision node-out-room3Floor", orderNPC, ["ralph has left room 3"])
+#        self.accept("Eve 1 collision node-into-Cube1", orderNPC, ["NPC1 bumped into wall"])
+#        self.accept("Eve 2 collision node-into-Cube2", orderNPC, ["NPC2 bumped into wall"])
+#        self.accept("Eve 3 collision node-into-Cube3", orderNPC, ["NPC3 bumped into wall"])
         
 
         #messenger.toggleVerbose()
@@ -396,7 +400,7 @@ class World(DirectObject):
         self.__mainAgent = Player(modelStanding, 
                             {"run":modelRunning, "walk":modelWalking},
                             turnRate = 150, 
-                            speed = 25,
+                            speed = 0,
                             agentList = self.__globalAgentList,
                             collisionMask = BitMask32.bit(1),
                             name="ralph",
@@ -419,7 +423,7 @@ class World(DirectObject):
         modelStanding = "models/ralph"
         modelRunning = "models/ralph-run"
         modelWalking = "models/ralph-walk"
-        self.__room1NPC = NPC(modelStanding, 
+        self.__NPC = NPC(modelStanding, 
                                 {"run":modelRunning, "walk":modelWalking},
                                 turnRate = 150, 
                                 speed = 15,
@@ -429,16 +433,17 @@ class World(DirectObject):
                                 rangeFinderCount = 13,
                                 adjacencySensorThreshold = 5,
                                 radarSlices = 5,
-                                radarLength = 40,
+                                radarLength = 0,
                                 scale = 1.0,
                                 massKg = 35.0,
                                 collisionHandler = self.physicsCollisionHandler,
                                 collisionTraverser = self.cTrav,
                                 waypoints = self.room1waypoints)
-        self.__room1NPC.setFluidPos(render, 0, 0, 10)
-        self.__room1NPC.setScale(render, 1)
-#        self.__room1NPC.setPlayer(self.__mainAgent)
-        self.__room1NPC.reparentTo(render)
+        self.__NPC.setFluidPos(render, -75, -75, 0)
+        self.__NPC.setScale(render, 1)
+        self.__NPC.setPlayer(self.__mainAgent)
+
+        self.__NPC.reparentTo(render)
 
 
         # So here's what I'm thinking. Currently, two collisions are happening when
@@ -449,7 +454,7 @@ class World(DirectObject):
         # I'll ignore the Player-->NPC collision. To do this, we need to set Player's into
         # collide mask to exclude NPC's from collide mask. Let's hope this doesn't break
         # anything.
-#        npcCollisionNP = self.__room1NPC.find("* collision node")
+#        npcCollisionNP = self.__NPC.find("* collision node")
 #        npcCollisionNP.node().setIntoCollideMask(npcCollisionNP.node().getIntoCollideMask() & 
 #                                                ~playerCollisionNP.node().getIntoCollideMask())
         
@@ -534,17 +539,17 @@ class World(DirectObject):
 ##        agentList = [(ralph.getX(), ralph.getY()) for ralph in self.__otherRalphs]
 ##        taskMgr.add(self.neatEvaluateTask, "self.neatEvaluateTask", extraArgs = [listOfTargets, self.__otherRalphs], appendTask = True)
         
-#        self.__room1NPC.setKeymap()
-#        taskMgr.add(self.__room1NPC.processKey, "processKeyTask")
+#        self.__NPC.setKeymap()
+#        taskMgr.add(self.__NPC.processKey, "processKeyTask")
 
 #        taskMgr.add(self.__mainAgent.handleCollisionTask, "handleCollisionTask")
 ##        taskMgr.add(self.ralph.wanderTask, "wander")
         
-#        taskMgr.add(self.__room1NPC.sense, "senseTask")
+        taskMgr.add(self.__NPC.sense, "senseTask")
 #        taskMgr.add(self.__room2NPC.sense, "senseTask")
 #        taskMgr.add(self.__room3NPC.sense, "senseTask")
 ##        taskMgr.add(self.ralph.think, "thinkTask")
-#        taskMgr.add(self.__room1NPC.act, "actTask")
+        taskMgr.add(self.__NPC.act, "actTask")
 #        taskMgr.add(self.__room2NPC.act, "actTask")
 #        taskMgr.add(self.__room3NPC.act, "actTask")
 #        taskMgr.add(self.checkGameState, "gameStateTask")
@@ -552,7 +557,7 @@ class World(DirectObject):
         #taskMgr.add(self.processKey, "processKeyTask")
 
         # This is for path finding
-        #taskMgr.add(self.__room1NPC.followPath, "followPathTask", extraArgs = [self.bestPath], appendTask = True)
+        #taskMgr.add(self.__NPC.followPath, "followPathTask", extraArgs = [self.bestPath], appendTask = True)
 
     def __setupCamera(self):
         #This camera position shows the whole level
@@ -570,9 +575,9 @@ class World(DirectObject):
         #base.oobeCull()
         #base.oobe()
         base.disableMouse()
-        base.camera.reparentTo(self.__room1NPC.actor)
+        base.camera.reparentTo(self.__NPC.actor)
         base.camera.setPos(0, 60, 60)
-        base.camera.lookAt(self.__room1NPC)
+        base.camera.lookAt(self.__NPC)
         base.camera.setP(base.camera.getP() + 10)
     
     def cameraRoom1Pos(self):
@@ -594,9 +599,9 @@ class World(DirectObject):
         base.camera.lookAt(200,0,0)
         
     def cameraRegularPos(self):        
-        base.camera.reparentTo(self.__room1NPC.actor)
+        base.camera.reparentTo(self.__NPC.actor)
         base.camera.setPos(0, 60, 60)
-        base.camera.lookAt(self.__room1NPC)
+        base.camera.lookAt(self.__NPC)
         base.camera.setP(base.camera.getP() + 10)
         
     positionHeadingText = OnscreenText(text="", style=1, fg=(1,1,1,1),
@@ -660,7 +665,7 @@ class World(DirectObject):
                     w.erase()
         
         def togglePathSmoothening(key):
-            self.__room1NPC.togglePathSmoothening()
+            self.__NPC.togglePathSmoothening()
 #            self.__room2NPC.togglePathSmoothening()
 #            self.__room3NPC.togglePathSmoothening()
             
