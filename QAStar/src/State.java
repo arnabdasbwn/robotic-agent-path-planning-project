@@ -38,6 +38,6 @@ public class State
 	
 	public String toString()
 	{
-		return String.format("|(%1s,%2s)| %3$.2f | %4$.2f | %5$.2f | %6$.2f |", point.x, point.y, up, down, left, right);
+		return String.format("(%1s/%2s),%3$.2f, %4$.2f, %5$.2f, %6$.2f", point.x, point.y, up, down, left, right);
 	}
 }
