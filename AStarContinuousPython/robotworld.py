@@ -71,10 +71,6 @@ class World(DirectObject):
             print("Showing waypoints")
             for w in self.room1waypoints:
                 w.draw()
-            for w in self.room2waypoints:
-                w.draw()
-            for w in self.room3waypoints:
-                w.draw()
         
 
     def __setupCollisions(self):
@@ -137,40 +133,6 @@ class World(DirectObject):
         keyNest.setScale(0.5)
         keyNest.setTexScale(TextureStage.getDefault(), 0.1)
         
-        #self.setWaypoints("room2")
-        self.room2waypoints = None
-        execfile("rooms/room2.py")
-
-        self.room2 = loader.loadModel("rooms/room2")
-        self.room2.findTexture("*").setMinfilter(Texture.FTLinearMipmapLinear)
-        self.room2.setScale(10)
-        self.room2.setTexScale(TextureStage.getDefault(), 10)
-        self.room2.reparentTo(level1)
-        self.room2.setY(self.room1, -20)
-        self.room2.find("**/Cube*;+h").setTag("Room", "2")
-                
-        execfile("rooms/room3.py")
-        
-        room3Model = loader.loadModel("rooms/room3")
-        room3Model.findTexture("*").setMinfilter(Texture.FTLinearMipmapLinear)
-        room3Model.setH(90)
-        room3Model.setP(180)
-        room3Model.setZ(2)
-        self.room3 = level1.attachNewNode("room 3")
-        room3Model.reparentTo(self.room3)
-        self.room3.setScale(10)
-        self.room3.setTexScale(TextureStage.getDefault(), 10)
-        self.room3.reparentTo(level1)
-        self.room3.setX(self.room1, 20)
-        self.room3.find("**/Cube*;+h").setTag("Room", "3")
-                                                
-        room2Floor = self.room2.attachNewNode(CollisionNode("room2Floor"))
-        room2Floor.node().addSolid(CollisionPolygon(Point3(9,-9,0), Point3(9,9,0),
-                                                Point3(-9,9,0), Point3(-9,-9,0)))
-
-                                                
-
-        
         gate = loader.loadModel("models/box")
         
         gateTo2 = self.room1.attachNewNode("gateTo2")
@@ -189,7 +151,8 @@ class World(DirectObject):
     
         
         def orderNPC(parameters, entry):
-            self.__NPC.start()#self.__NPC.handleTransition("start")
+            self.__NPC.start()
+
         
         self.accept("target collision node-into-room1Floor", orderNPC, ["target has entered room 1"])
         self.accept("target collision node-into-room2Floor", orderNPC, ["target has entered room 2"])
@@ -222,7 +185,7 @@ class World(DirectObject):
                             collisionTraverser = self.cTrav)
         # Make it visible
         self.__mainAgent.reparentTo(render)
-        self.__mainAgent.setPos(-20, -210, 0)
+        self.__mainAgent.setPos(-20, -10, 0)#-210
         self.gate.find("**/Cube;+h").setCollideMask(~self.__mainAgent.collisionMask)
         
     __targetCount = 0
@@ -251,12 +214,13 @@ class World(DirectObject):
                                 massKg = 35.0,
                                 collisionHandler = self.physicsCollisionHandler,
                                 collisionTraverser = self.cTrav,
-                                waypoints = self.room2waypoints)
-        self.__NPC.setFluidPos(render, 20, -190, 0)
+                                waypoints = self.room1waypoints)
+        self.__NPC.setFluidPos(render, 20, 10, 0)#-190
         self.__NPC.setScale(render, 1)
         self.__NPC.setMainTarget(self.__mainAgent)
 
         self.__NPC.reparentTo(render)
+	self.__NPC.start()
     
     def __setupTasks(self):
         """
