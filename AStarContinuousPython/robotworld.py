@@ -52,7 +52,7 @@ class World(DirectObject):
         self.__setupGravity()
         self.__setupLevel()
         self.__setupMainAgent()
-        self.__setupNPCs()
+        self.__setupNPC()
         self.__setupCamera()
         #Many things within the NPC are dependant on the level it is in.
 #        self.__NPC.setKeyAndNestReference(self.keyNest1, self.room1Key)
@@ -93,8 +93,6 @@ class World(DirectObject):
         gravityFNP=render.attachNewNode(gravityFN)
         gravityForce=LinearVectorForce(0,0,-6) #gravity acceleration ft/s^2
         gravityFN.addForce(gravityForce)
-        
-
 
         base.physicsMgr.addLinearForce(gravityForce)
 
@@ -117,17 +115,6 @@ class World(DirectObject):
         environment.setTexScale(TextureStage.getDefault(), 0.02, 0.02)
         environment.setTexture(texture, 1)
 
-#        skyBox = loader.loadModel("models/SunnySky/sunny")
-#        skyBox.setScale(10)
-#        skyBox.reparentTo(render)
-        
-    
-    currentAngle = 0
-    def rotate(self, someItem):
-        if someItem != None:
-            self.currentAngle = self.currentAngle + 250 * taskTimer.elapsedTime
-            self.currentAngle %= 360
-            someItem.setH(self.currentAngle)
             
     def __setupLevel(self):
         """
@@ -176,23 +163,11 @@ class World(DirectObject):
         self.room3.reparentTo(level1)
         self.room3.setX(self.room1, 20)
         self.room3.find("**/Cube*;+h").setTag("Room", "3")
-
-        
-        
-        room3SphereOfDoom = self.room3.attachNewNode(CollisionNode("Jim's Hair"))
-        room3SphereOfDoom.node().addSolid(CollisionSphere(3, -9, 0.5, 1.0))
-        
-        room1Floor = self.room1.attachNewNode(CollisionNode("room1Floor"))
-        room1Floor.node().addSolid(CollisionPolygon(Point3(9,-9,0), Point3(9,9,0),
-                                                Point3(-9,9,0), Point3(-9,-9,0)))
                                                 
         room2Floor = self.room2.attachNewNode(CollisionNode("room2Floor"))
         room2Floor.node().addSolid(CollisionPolygon(Point3(9,-9,0), Point3(9,9,0),
                                                 Point3(-9,9,0), Point3(-9,-9,0)))
 
-        room3Floor = self.room3.attachNewNode(CollisionNode("room3Floor"))
-        room3Floor.node().addSolid(CollisionPolygon(Point3(9,-9,0), Point3(9,9,0),
-                                                Point3(-9,9,0), Point3(-9,-9,0)))
                                                 
 
         
@@ -214,46 +189,11 @@ class World(DirectObject):
     
         
         def orderNPC(parameters, entry):
-            self.__NPC.handleTransition("playerEnteredRoom")
-            self.__NPC.handleTransition("keyTaken")
-#            if(parameters == "ralph has entered room 1"):
-#                self.__NPC.handleTransition("playerEnteredRoom")
-#                self.reComputeHUD(self.room1)
-#                if self.__mainAgent.hasKey(self.room1Key):
-#                    self.__mainAgent.setCurrentKey(self.room1Key)
-#            elif(parameters == "ralph has left room 1"):
-#                self.__NPC.handleTransition("playerLeftRoom")
-#                if self.__mainAgent.hasKey(self.room1Key):
-#                    self.__mainAgent.setCurrentKey(None)
-#            elif(parameters == "ralph has entered room 2"):
-#                self.__room2NPC.handleTransition("playerEnteredRoom")
-#                self.reComputeHUD(self.room2)
-#                if self.__mainAgent.hasKey(self.room2Key):
-#                    self.__mainAgent.setCurrentKey(self.room2Key)
-#            elif(parameters == "ralph has left room 2"):
-#                self.__room2NPC.handleTransition("playerLeftRoom")
-#                if self.__mainAgent.hasKey(self.room2Key):
-#                    self.__mainAgent.setCurrentKey(None)
-#            elif(parameters == "ralph has entered room 3"):
-#                self.__room3NPC.handleTransition("playerEnteredRoom")
-#                if self.__mainAgent.hasKey(self.room3Key):
-#                    self.__mainAgent.setCurrentKey(self.room3Key)
-#                self.reComputeHUD(self.room3)
-#            elif(parameters == "ralph has left room 3"):
-#                self.__room3NPC.handleTransition("playerLeftRoom")
-#                if self.__mainAgent.hasKey(self.room3Key):
-#                    self.__mainAgent.setCurrentKey(None)
-#            elif(parameters == "NPC1 bumped into wall"):
-#                self.__NPC.handleTransition("bumpedIntoWall")
-#            elif(parameters == "NPC2 bumped into wall"):
-#                self.__room2NPC.handleTransition("bumpedIntoWall")
-#            elif(parameters == "NPC3 bumped into wall"):
-#                self.__room3NPC.handleTransition("bumpedIntoWall")
-#                
+            self.__NPC.start()#self.__NPC.handleTransition("start")
         
-        self.accept("ralph collision node-into-room1Floor", orderNPC, ["ralph has entered room 1"])
-        self.accept("ralph collision node-into-room2Floor", orderNPC, ["ralph has entered room 2"])
-        self.accept("ralph collision node-into-room3Floor", orderNPC, ["ralph has entered room 3"])
+        self.accept("target collision node-into-room1Floor", orderNPC, ["target has entered room 1"])
+        self.accept("target collision node-into-room2Floor", orderNPC, ["target has entered room 2"])
+        self.accept("target collision node-into-room3Floor", orderNPC, ["target has entered room 3"])
 #        self.accept("ralph collision node-out-room3Floor", orderNPC, ["ralph has left room 3"])
 #        self.accept("Eve 1 collision node-into-Cube1", orderNPC, ["NPC1 bumped into wall"])
 #        self.accept("Eve 2 collision node-into-Cube2", orderNPC, ["NPC2 bumped into wall"])
@@ -276,7 +216,7 @@ class World(DirectObject):
                             speed = 0,
                             agentList = self.__globalAgentList,
                             collisionMask = BitMask32.bit(1),
-                            name="ralph",
+                            name="target",
                             massKg = 35.0,
                             collisionHandler = self.physicsCollisionHandler,
                             collisionTraverser = self.cTrav)
@@ -288,7 +228,7 @@ class World(DirectObject):
     __targetCount = 0
     __targets = []
     __agentToTargetMap = {}
-    def __setupNPCs(self):
+    def __setupNPC(self):
         # This is to support the collisions for each node. See the paragraph comment
         # above where we modify the npc's collision node
 #        playerCollisionNP = self.__mainAgent.find("* collision node")
@@ -314,160 +254,43 @@ class World(DirectObject):
                                 waypoints = self.room2waypoints)
         self.__NPC.setFluidPos(render, 20, -190, 0)
         self.__NPC.setScale(render, 1)
-        self.__NPC.setPlayer(self.__mainAgent)
+        self.__NPC.setMainTarget(self.__mainAgent)
 
         self.__NPC.reparentTo(render)
-
-
-        # So here's what I'm thinking. Currently, two collisions are happening when
-        # we collide with an NPC. Those are Player-->NPC and NPC-->Player. This is
-        # causing some jumpiness, which in tern causes some collisions to fail (e.g.,
-        # falling through the floor). In order to fix this, we need to ignore one of
-        # these collisions. Since the NPC should react to the Player, and not vice-versa,
-        # I'll ignore the Player-->NPC collision. To do this, we need to set Player's into
-        # collide mask to exclude NPC's from collide mask. Let's hope this doesn't break
-        # anything.
-#        npcCollisionNP = self.__NPC.find("* collision node")
-#        npcCollisionNP.node().setIntoCollideMask(npcCollisionNP.node().getIntoCollideMask() & 
-#                                                ~playerCollisionNP.node().getIntoCollideMask())
-        
-##        modelStanding = "models/bunny/bunny"
-##        modelRunning = "models/bunny/bunny"
-##        modelWalking = "models/bunny/bunny"
-#        self.__room2NPC = NPC(modelStanding,
-#                                {"run":modelRunning, "walk":modelWalking},
-#                                turnRate = 150, 
-#                                speed = 15,
-#                                agentList = self.__globalAgentList,
-#                                name = "Eve 2",#"das Osterhase",
-#                                collisionMask = BitMask32.bit(4),
-#                                rangeFinderCount = 13,
-#                                adjacencySensorThreshold = 5,
-#                                radarSlices = 5,
-#                                radarLength = 40,
-#                                scale = 1.0,
-#                                massKg = 35.0,
-#                                collisionHandler = self.physicsCollisionHandler,
-#                                collisionTraverser = self.cTrav,
-#                                waypoints = self.room2waypoints)
-#        self.__room2NPC.setPos(-20, -210, 10)
-#        self.__room2NPC.setPlayer(self.__mainAgent)
-#        self.__room2NPC.reparentTo(render)
-#        npcCollisionNP = self.__room2NPC.find("* collision node")
-#        npcCollisionNP.node().setIntoCollideMask(npcCollisionNP.node().getIntoCollideMask() & 
-#                                                ~playerCollisionNP.node().getIntoCollideMask())
-
-#        self.__room3NPC = NPC(modelStanding, 
-#                                {"run":modelRunning, "walk":modelWalking},
-#                                turnRate = 150, 
-#                                speed = 15,
-#                                agentList = self.__globalAgentList,
-#                                name = "Eve 3",#"der Hoppelhaschen",
-#                                collisionMask = BitMask32.bit(5),
-#                                rangeFinderCount = 13,
-#                                adjacencySensorThreshold = 5,
-#                                radarSlices = 5,
-#                                radarLength = 40,
-#                                scale = 1.0,
-#                                massKg = 35.0,
-#                                collisionHandler = self.physicsCollisionHandler,
-#                                collisionTraverser = self.cTrav,
-#                                waypoints = self.room3waypoints)
-#        self.__room3NPC.setPos(210, 0, 10)
-#        self.__room3NPC.setPlayer(self.__mainAgent)
-#        self.__room3NPC.reparentTo(render)
-#        npcCollisionNP = self.__room3NPC.find("* collision node")
-#        npcCollisionNP.node().setIntoCollideMask(npcCollisionNP.node().getIntoCollideMask() & 
-#                                                ~playerCollisionNP.node().getIntoCollideMask())
-        
-    def __setupRandomClutter(self):
-##        self.ball1 = loader.loadModel("models/ball")
-##        #self.ball1.findTexture("*").setMinfilter(Texture.FTLinearMipmapLinear)
-##        self.ball1.findTexture("hedge.jpg")
-##        self.ball1.setTexScale(TextureStage.getDefault(), 0.1)
-##        self.ball1.setPos(0,0,0)
-##        self.ball1.reparentTo(render)
-        pass
-        
-
     
     def __setupTasks(self):
         """
         This function sets up all the tasks used in the world
         """
         taskMgr.add(taskTimer, "taskTimer")
-        
-        #for index, ralph in enumerate(self.__otherRalphs):
-
-
-##            taskMgr.add(ralph.sense, "sense" + str(index))
-##            taskMgr.add(ralph.think, "think" + str(index))
-##            taskMgr.add(ralph.act,   "act"   + str(index))
-            #taskMgr.add(ralph.wanderTask, "wander" + str(index))
-##            taskMgr.add(ralph.seekTask, "seekTask" + str(index), extraArgs = [self.__agentToTargetMap[ralph]], appendTask = True)
-            
-#        taskMgr.add(self.__printPositionAndHeading, "__printPositionAndHeading")
-        
-##        listOfTargets = [(target.getX(), target.getY()) for target in self.__targets]
-##        agentList = [(ralph.getX(), ralph.getY()) for ralph in self.__otherRalphs]
-##        taskMgr.add(self.neatEvaluateTask, "self.neatEvaluateTask", extraArgs = [listOfTargets, self.__otherRalphs], appendTask = True)
-        
-#        self.__NPC.setKeymap()
-#        taskMgr.add(self.__NPC.processKey, "processKeyTask")
-
-#        taskMgr.add(self.__mainAgent.handleCollisionTask, "handleCollisionTask")
-##        taskMgr.add(self.ralph.wanderTask, "wander")
-        
-        taskMgr.add(self.__NPC.sense, "senseTask")
-#        taskMgr.add(self.__room2NPC.sense, "senseTask")
-#        taskMgr.add(self.__room3NPC.sense, "senseTask")
-##        taskMgr.add(self.ralph.think, "thinkTask")
         taskMgr.add(self.__NPC.act, "actTask")
-#        taskMgr.add(self.__room2NPC.act, "actTask")
-#        taskMgr.add(self.__room3NPC.act, "actTask")
-#        taskMgr.add(self.checkGameState, "gameStateTask")
-        #taskMgr.add(self.processKey, "processKeyTask")
-
-        # This is for path finding
-        #taskMgr.add(self.__NPC.followPath, "followPathTask", extraArgs = [self.bestPath], appendTask = True)
 
     def __setupCamera(self):
         #This camera position shows the whole level
         base.camera.setPos(100,-100, 795) #This is debug camera position.
         base.camera.lookAt(100,-100,0)
-        #This camera position shows room1
-        #base.camera.setPos(0,0, 375) #This is debug camera position.
-        #base.camera.lookAt(0,0,0)
-        #This camera position shows room2
-        #base.camera.setPos(0,-200, 375) #This is debug camera position.
-        #base.camera.lookAt(0,-200,0)    
-        #This camera position shows room3
-        #base.camera.setPos(200,0, 375) #This is debug camera position.
-        #base.camera.lookAt(200,0,0)    
-        #base.oobeCull()
-        #base.oobe()
         base.disableMouse()
         base.camera.reparentTo(self.__NPC.actor)
-        base.camera.setPos(0, 60, 60)
+        base.camera.setPos(0, 60, 200)
         base.camera.lookAt(self.__NPC)
         base.camera.setP(base.camera.getP() + 10)
     
     def cameraRoom1Pos(self):
         base.camera.reparentTo(render)
         #This camera position shows room1
-        base.camera.setPos(0,0, 375) #This is debug camera position.
+        base.camera.setPos(0,0, 350) #This is debug camera position.
         base.camera.lookAt(0,0,0)        
         
     def cameraRoom2Pos(self):
         base.camera.reparentTo(render)
         #This camera position shows room2
-        base.camera.setPos(0,-200, 375) #This is debug camera position.
+        base.camera.setPos(0,-200, 350) #This is debug camera position.
         base.camera.lookAt(0,-200,0)    
         
     def cameraRoom3Pos(self):
         base.camera.reparentTo(render)
         #This camera position shows room3
-        base.camera.setPos(200,0, 375) #This is debug camera position.
+        base.camera.setPos(200,0, 350) #This is debug camera position.
         base.camera.lookAt(200,0,0)
         
     def cameraRegularPos(self):        
@@ -479,40 +302,6 @@ class World(DirectObject):
     positionHeadingText = OnscreenText(text="", style=1, fg=(1,1,1,1),
                    pos=(-1.3,-0.95), align=TextNode.ALeft, scale = .05, mayChange = True)
                 
-
-    def __printPositionAndHeading(self, task):
-#        heading = self.__mainAgent.getH()
-#        heading %= 360.0
-        pass
-            
-##        self.positionHeadingText.setText("Position: (" + 
-##            str(self.__mainAgent.getX()) + ", " + 
-##            str(self.__mainAgent.getY()) + ", " +
-##            str(self.__mainAgent.getZ()) + ") at heading " + 
-##            str(heading))
-##        return Task.cont
-
-    # Every generation, throw out the old brains and put in the new ones. At
-    # this point we can start all over with new nodes.
-    generationCount = 0
-    generationLifetimeTicks = 500
-    neatEvaluateTaskCallCount = 0
-##    neuralNetwork = NeuralNetwork()
-    def neatEvaluateTask(self, listOfTargets, agentList, task):
-        self.neatEvaluateTaskCallCount += 1
-        if self.generationLifetimeTicks == self.neatEvaluateTaskCallCount:
-            self.neatEvaluateTaskCallCount = 0
-            oldBrains = [agent.brain for agent in agentList]
-            self.generationCount += 1
-            listOfPositions = [(agent.getX(), agent.getY()) for agent in agentList]
-            newBrains = self.neuralNetwork.nextGeneration(oldBrains, listOfTargets, listOfPositions)
-            
-            for agent, brain in zip(agentList, newBrains):
-                agent.brain = brain
-                agent.setPos(self.startingPositions[agent])
-
-        return Task.cont
-    
     __keyMap = {"enablePathSmoothening":False,
         "showWaypoints":False}
 
@@ -538,8 +327,6 @@ class World(DirectObject):
         
         def togglePathSmoothening(key):
             self.__NPC.togglePathSmoothening()
-#            self.__room2NPC.togglePathSmoothening()
-#            self.__room3NPC.togglePathSmoothening()
             
         def toggleCollisions(key):
             if(self.showCollisions):
