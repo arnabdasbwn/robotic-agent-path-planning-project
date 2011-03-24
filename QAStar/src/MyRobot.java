@@ -270,7 +270,8 @@ public class MyRobot {
 		
 		for(int i = 0; i < numIter; i++)
 		{
-			map.moveRobot(startPoint.y, startPoint.x, "N");
+			
+			randomizeStart();
 			
 			goalFound = false;
 			for(int j = 0; (j < maxSteps) && !goalFound; j++)
@@ -285,6 +286,26 @@ public class MyRobot {
 		}
 		
 		printQTable();
+	}
+
+	private void randomizeStart() 
+	{
+		int y = (int)(Math.random() * (qTable.length - 1));
+		int x = (int)(Math.random() * (qTable[0].length - 1));
+		boolean valid = false;
+		
+		while(!valid)
+		{
+			y = (int)(Math.random() * (qTable.length - 1));
+			x = (int)(Math.random() * (qTable[0].length - 1));
+			
+			if(!qTable[y][x].isWall())
+			{
+				valid = true;
+			}
+		}
+		
+		map.moveRobot(y, x, "N");
 	}
 
 	private void printQTable() 
