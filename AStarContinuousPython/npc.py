@@ -13,9 +13,6 @@ from pandac.PandaModules import TextNode
 from pandac.PandaModules import TextureStage
 from direct.task import Task
 from direct.gui.OnscreenText import OnscreenText
-##from neat import config, population, chromosome, genome, visualize
-##from neat.nn import nn_pure as nn
-##from neat.config import Config
 import random
 import math
 from math import sqrt
@@ -24,17 +21,6 @@ from pathFinder import PathFinder
 from tasktimer import taskTimer
 from direct.showbase.DirectObject import DirectObject
 from pandac.PandaModules import CollisionHandlerEvent
-        
-def RandGenerator():
-    while True:
-        random.seed()
-        yield random.uniform(-1000, 1000)
-        
-RG = RandGenerator()
-
-
-# needed for neat-python
-##config.load('ai_config')
         
 class NPC(Agent, DirectObject):
     collisionCount = 0
@@ -67,7 +53,6 @@ class NPC(Agent, DirectObject):
         self.npcState = "retriveKey"
         self.waypoints = waypoints
 	self.targetReached = False
-        
         self.setScale(self.scale)
         self.currentTarget = None
         self.player = None
@@ -76,14 +61,6 @@ class NPC(Agent, DirectObject):
         self.keyInHand = False
         self.hasFallen = False
         self.pathSmoothening = True
-                    
-        self.annMovementRequests = {
-            "left":False,
-            "right":False,
-            "up":False,
-            "down":False}
-        
-        self.adjacentAgents = []
 
             
     def togglePathSmoothening(self, value = None):
@@ -127,12 +104,11 @@ class NPC(Agent, DirectObject):
                 self.targetReached = True
         return Task.cont
 
-    def setMainTarget(self, mainTarget):
+    def setTarget(self, mainTarget):
         self.mainTarget = mainTarget
         
     def start(self):
 	self.bestPath = PathFinder.AStar(self, self.mainTarget, self.waypoints)
-	self.mainTarget.addKey(self.key)
                 
     def drawBestPath(self):
         if self.bestPath != None:

@@ -1,4 +1,4 @@
-# from the file character.py, import the class character
+﻿# from the file character.py, import the class character
 #include character.py
 #from pandac.PandaModules import loadPrcFileData
 #loadPrcFileData("", "fullscreen 1")
@@ -26,7 +26,6 @@ from pandac.PandaModules import TextureStage
 from pandac.PandaModules import TransparencyAttrib
 from pandac.PandaModules import Vec3
 from npc import NPC
-from player import Player
 import sys
 from direct.task import Task
 from direct.gui.OnscreenText import OnscreenText
@@ -51,25 +50,17 @@ class World(DirectObject):
         self.__setupCollisions()
         self.__setupGravity()
         self.__setupLevel()
-        self.__setupMainAgent()
+        self.__setupTarget()
         self.__setupNPC()
         self.__setupCamera()
-        #Many things within the NPC are dependant on the level it is in.
-#        self.__NPC.setKeyAndNestReference(self.keyNest1, self.room1Key)
-#        self.__room2NPC.setKeyAndNestReference(self.keyNest2, self.room2Key)
-        #self.__room2NPC.handleTransition("playerLeftRoom")
-#        self.__room3NPC.setKeyAndNestReference(self.keyNest3, self.room3Key)
-        #self.__room3NPC.handleTransition("playerLeftRoom")
         self.__setupTasks()
         
         self.setKeymap()
-        self.room1Key = "models/blueKeyHUD.png"
-        self.__mainAgent.setCurrentKey(self.room1Key)
         self.__NPC.pathSmoothening = self.pathSmoothening
 
         if(self.showWaypoints):
             print("Showing waypoints")
-            for w in self.room1waypoints:
+            for w in self.roomWaypoints:
                 w.draw()
         
 
@@ -94,11 +85,11 @@ class World(DirectObject):
 
     def __setupEnvironment(self):
         cm = CardMaker("ground")
-        size = 200
+	size = 100
         cm.setFrame(-size, size, -size, size)
         environment = render.attachNewNode(cm.generate())
         environment.lookAt(0, 0, -1)
-        environment.setPos(100, -100, 0)
+        environment.setPos(0, 0, 0)
         environment.setCollideMask(BitMask32.allOn())
         environment.reparentTo(render)
         
@@ -114,66 +105,40 @@ class World(DirectObject):
             
     def __setupLevel(self):
         """
-        Some notes and caveats: Each time you add a room, make sure that you tag it with key "Room" and value "<room number>".
-        This is so our A* algorithm can do clear path detection on only the rooms, not anything else.
+        Originally planned to have multiple levels, that never happened.
         """
         level1 = render.attachNewNode("level 1 node path")
         
-        execfile("rooms/room1.py")
+        execfile("rooms/room.py")
 
-        self.room1 = loader.loadModel("rooms/room1")
-        self.room1.findTexture("*").setMinfilter(Texture.FTLinearMipmapLinear)
-        self.room1.setScale(10)
-        self.room1.setTexScale(TextureStage.getDefault(), 10)
-        self.room1.reparentTo(render)
-        self.room1.find("**/Cube*;+h").setTag("Room", "1")
-
-        keyNest = loader.loadModel("models/nest")
-        keyNest.findTexture("*").setMinfilter(Texture.FTLinearMipmapLinear)
-        keyNest.setScale(0.5)
-        keyNest.setTexScale(TextureStage.getDefault(), 0.1)
+        self.room = loader.loadModel("rooms/room")
+        self.room.findTexture("*").setMinfilter(Texture.FTLinearMipmapLinear)
+        self.room.setScale(10)
+        self.room.setTexScale(TextureStage.getDefault(), 10)
+        self.room.reparentTo(render)
+        self.room.find("**/Cube;+h").setTag("Room", "1")
         
         gate = loader.loadModel("models/box")
         
-        gateTo2 = self.room1.attachNewNode("gateTo2")
+        gateTo2 = self.room.attachNewNode("gateTo2")
         gate.instanceTo(gateTo2)
         gateTo2.setPos(8, -10, 0)
         gateTo2.hide()
         
-        gateTo3 = self.room1.attachNewNode("gateTo3")
-        gate.instanceTo(gateTo3)
-        gateTo3.setPos(10, 8, 0)
-        gateTo3.hide()
-        
         self.physicsCollisionHandler.addInPattern("%fn-into-%in")
         self.physicsCollisionHandler.addOutPattern("%fn-out-%in")
-        
-    
-        
-        def orderNPC(parameters, entry):
-            self.__NPC.start()
-
-        
-        self.accept("target collision node-into-room1Floor", orderNPC, ["target has entered room 1"])
-        self.accept("target collision node-into-room2Floor", orderNPC, ["target has entered room 2"])
-        self.accept("target collision node-into-room3Floor", orderNPC, ["target has entered room 3"])
-#        self.accept("ralph collision node-out-room3Floor", orderNPC, ["ralph has left room 3"])
-#        self.accept("Eve 1 collision node-into-Cube1", orderNPC, ["NPC1 bumped into wall"])
-#        self.accept("Eve 2 collision node-into-Cube2", orderNPC, ["NPC2 bumped into wall"])
-#        self.accept("Eve 3 collision node-into-Cube3", orderNPC, ["NPC3 bumped into wall"])
-        
 
         #messenger.toggleVerbose()
         self.gate = gate
         
 
     __globalAgentList = []
-    __mainAgent = None
-    def __setupMainAgent(self):
+    __mainTarget = None
+    def __setupTarget(self):
         modelStanding = "models/ralph"
         modelRunning = "models/ralph-run"
         modelWalking = "models/ralph-walk"
-        self.__mainAgent = Player(modelStanding, 
+        self.__mainTarget = NPC(modelStanding, 
                             {"run":modelRunning, "walk":modelWalking},
                             turnRate = 150, 
                             speed = 0,
@@ -184,9 +149,9 @@ class World(DirectObject):
                             collisionHandler = self.physicsCollisionHandler,
                             collisionTraverser = self.cTrav)
         # Make it visible
-        self.__mainAgent.reparentTo(render)
-        self.__mainAgent.setPos(-20, -10, 0)#-210
-        self.gate.find("**/Cube;+h").setCollideMask(~self.__mainAgent.collisionMask)
+        self.__mainTarget.reparentTo(render)
+        self.__mainTarget.setPos(-20, -10, 0)#-210
+        self.gate.find("**/Cube;+h").setCollideMask(~self.__mainTarget.collisionMask)
         
     __targetCount = 0
     __targets = []
@@ -194,7 +159,7 @@ class World(DirectObject):
     def __setupNPC(self):
         # This is to support the collisions for each node. See the paragraph comment
         # above where we modify the npc's collision node
-#        playerCollisionNP = self.__mainAgent.find("* collision node")
+#        playerCollisionNP = self.__mainTarget.find("* collision node")
 
         modelStanding = "models/ralph"
         modelRunning = "models/ralph-run"
@@ -214,10 +179,10 @@ class World(DirectObject):
                                 massKg = 35.0,
                                 collisionHandler = self.physicsCollisionHandler,
                                 collisionTraverser = self.cTrav,
-                                waypoints = self.room1waypoints)
+                                waypoints = self.roomWaypoints)
         self.__NPC.setFluidPos(render, 20, 10, 0)#-190
         self.__NPC.setScale(render, 1)
-        self.__NPC.setMainTarget(self.__mainAgent)
+        self.__NPC.setTarget(self.__mainTarget)
 
         self.__NPC.reparentTo(render)
 	self.__NPC.start()
@@ -239,27 +204,15 @@ class World(DirectObject):
         base.camera.lookAt(self.__NPC)
         base.camera.setP(base.camera.getP() + 10)
     
-    def cameraRoom1Pos(self):
+    def cameraViewRoomPos(self):
         base.camera.reparentTo(render)
-        #This camera position shows room1
-        base.camera.setPos(0,0, 350) #This is debug camera position.
+        #This camera position shows entire room at once
+        base.camera.setPos(0,0, 300) #This is debug camera position.
         base.camera.lookAt(0,0,0)        
-        
-    def cameraRoom2Pos(self):
-        base.camera.reparentTo(render)
-        #This camera position shows room2
-        base.camera.setPos(0,-200, 350) #This is debug camera position.
-        base.camera.lookAt(0,-200,0)    
-        
-    def cameraRoom3Pos(self):
-        base.camera.reparentTo(render)
-        #This camera position shows room3
-        base.camera.setPos(200,0, 350) #This is debug camera position.
-        base.camera.lookAt(200,0,0)
-        
+
     def cameraRegularPos(self):        
         base.camera.reparentTo(self.__NPC.actor)
-        base.camera.setPos(0, 60, 60)
+        base.camera.setPos(0, 60, 200)
         base.camera.lookAt(self.__NPC)
         base.camera.setP(base.camera.getP() + 10)
         
@@ -274,19 +227,11 @@ class World(DirectObject):
             self.showWaypoints = not self.showWaypoints
             if(self.showWaypoints):
                 print("Showing waypoints")
-                for w in self.room1waypoints:
-                    w.draw()
-                for w in self.room2waypoints:
-                    w.draw()
-                for w in self.room3waypoints:
+                for w in self.roomWaypoints:
                     w.draw()
             else:
                 print("Hiding waypoints")
-                for w in self.room1waypoints:
-                    w.erase()
-                for w in self.room2waypoints:
-                    w.erase()
-                for w in self.room3waypoints:
+                for w in self.roomWaypoints:
                     w.erase()
         
         def togglePathSmoothening(key):
@@ -304,10 +249,8 @@ class World(DirectObject):
         self.accept("p",              togglePathSmoothening, ["togglePathSmoothening"])
         self.accept("w",              toggleWaypoints, ["toggleWaypoints"])
         self.accept("c",              toggleCollisions, ["toggleCollisions"])
-        self.accept("1", self.cameraRoom1Pos)
-        self.accept("2", self.cameraRoom2Pos)
-        self.accept("3", self.cameraRoom3Pos)
-        self.accept("4", self.cameraRegularPos)
+        self.accept("1", self.cameraRegularPos)
+        self.accept("2", self.cameraViewRoomPos)
         
     
 if __name__ == "__main__":
