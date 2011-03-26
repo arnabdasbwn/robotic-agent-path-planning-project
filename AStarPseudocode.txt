@@ -1,0 +1,39 @@
+currentPosition = startPosition
+while(goalNotFound)
+	if validPosition(currentPosition.up)
+		and not visited(currentPosition.up)
+		and currentPosition.up.f == 0
+	then
+		currentPosition.up.previous = s
+		computeAStar(currentPosition.up)
+		priorityQueue.push(currentPosition.up)
+	elif validPosition(currentPosition.down)
+		and not visited(currentPosition.down)
+		and currentPosition.down.f == 0
+	then
+		currentPosition.down.previous = s
+		computeAStar(currentPosition.down)
+		priorityQueue.push(currentPosition.down)
+	elif validPosition(currentPosition.left)
+		and not visited(currentPosition.left)
+		and currentPosition.left.f == 0
+	then
+		currentPosition.left.previous = s
+		computeAStar(currentPosition.left)
+		priorityQueue.push(currentPosition.left)
+	elif validPosition(currentPosition.right)
+		and not visited(currentPosition.right)
+		and currentPosition.right.f == 0
+	then
+		currentPosition.right.previous = s
+		computeAStar(currentPosition.right)
+		priorityQueue.push(currentPosition.right)
+	end if
+
+solution.add(goal)
+while (currentPosition.previous)
+	solution.add(currentPosition.previous)
+
+solution = solution.reverse()
+	
+		
