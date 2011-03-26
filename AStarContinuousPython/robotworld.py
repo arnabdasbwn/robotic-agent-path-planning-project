@@ -113,7 +113,7 @@ class World(DirectObject):
 
         self.room = loader.loadModel("rooms/room")
         self.room.findTexture("*").setMinfilter(Texture.FTLinearMipmapLinear)
-        self.room.setScale(10)
+        self.room.setScale(10,10,5)
         self.room.setTexScale(TextureStage.getDefault(), 10)
         self.room.reparentTo(render)
         self.room.find("**/Cube;+h").setTag("Room", "1")
