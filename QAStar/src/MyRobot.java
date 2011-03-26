@@ -367,8 +367,8 @@ public class MyRobot {
 		}
 		
 		qTable[s.point.y][s.point.x] = s;
-		map.moveRobot(next.point.y, next.point.x, angle);
-		return next.isGoal();
+		boolean moveCorrect = moveRobot(s.point.y, s.point.x, next.point.y, next.point.x, angle);
+		return next.isGoal() && moveCorrect;
 	}
 
 	private boolean takeBestPath(int numerator, int denominator)
@@ -478,8 +478,8 @@ public class MyRobot {
 		}
 		
 		qTable[s.point.y][s.point.x] = s;
-		map.moveRobot(next.point.y, next.point.x, angle);
-		return next.isGoal();
+		boolean moveCorrect = moveRobot(s.point.y, s.point.x, next.point.y, next.point.x, angle);
+		return next.isGoal() && moveCorrect;
 	}
 	
 	private double update(State current, State next, double oldValue) 
@@ -658,6 +658,168 @@ public class MyRobot {
 		initAStar();
 		initialize();
 		_initialized = true;
+	}
+	
+	private boolean moveRobot(int prevy, int prevx, int y, int x, String angle)
+	{
+		int direction = -1;
+		int opposite = -1;
+		int diff = -1;
+		int oppositediff = -1;
+		
+		boolean canMoveUp = false, canMoveDown = false, canMoveLeft = false, canMoveRight = false;
+		
+		if(prevy != y)
+		{
+			if(prevy > y)
+			{
+				direction = DOWN;
+				opposite = UP;
+				diff = LEFT;
+				oppositediff = RIGHT;
+			}
+			else
+			{
+				direction = UP;
+				opposite = DOWN;
+				diff = LEFT;
+				oppositediff = RIGHT;
+			}
+		}		
+		else if(prevx != x)
+		{
+			if(prevx > x)
+			{
+				direction = LEFT;
+				opposite = RIGHT;
+				diff = UP;
+				oppositediff = DOWN;
+			}
+			else
+			{
+				direction = RIGHT;
+				opposite = LEFT;
+				diff = UP;
+				oppositediff = DOWN;
+			}
+		}
+		
+		if(prevy < qTable.length - 1 && !qTable[prevy+1][prevx].isWall())
+		{
+			canMoveUp = true;
+		}
+		if(prevy > 0 && !qTable[prevy-1][prevx].isWall())
+		{
+			canMoveDown = true;
+		}
+		if(prevx > 0 && !qTable[prevy][prevx-1].isWall())
+		{
+			canMoveLeft = true;
+		}
+		if(prevx < qTable[0].length - 1 && !qTable[prevy][prevx+1].isWall())
+		{
+			canMoveRight = true;
+		}
+		
+		double random = Math.random();
+		
+		// Correctly move
+		if(random < .60)
+		{
+			System.out.println("MOVING CORRECT: " + y + "," + x);
+			map.moveRobot(y, x, angle);
+			return true;
+		}
+		// Move opposite of correct move 
+		else if(random >= .60 && random < .70)
+		{
+			if(opposite == UP  && canMoveUp)
+			{
+				System.out.println("MOVING UP OPPOSITE: " + (prevy+1) + "," + prevx);
+				map.moveRobot(prevy+1, prevx, angle);
+			}
+			else if(opposite == DOWN && canMoveDown)
+			{
+				System.out.println("MOVING DOWN OPPOSITE: " + (prevy-1) + "," + prevx);
+				map.moveRobot(prevy-1, prevx, angle);
+			}
+			else if(opposite == LEFT && canMoveLeft)
+			{
+				System.out.println("MOVING LEFT OPPOSITE: " + prevy + "," + (prevx-1));
+				map.moveRobot(prevy, prevx-1, angle);
+			}
+			else if(opposite == RIGHT && canMoveRight)
+			{
+				System.out.println("MOVING RIGHT OPPOSITE: " + prevy + "," + (prevx+1));
+				map.moveRobot(prevy, prevx+1, angle);
+			}
+			else
+			{
+				System.out.println("MOVING RIGHT OPPOSITE: " + prevy + "," + prevx);
+			}
+		} 
+		// Move in diff
+		else if(random >= .70 && random < .80)
+		{
+			if(diff == UP && canMoveUp)
+			{
+				System.out.println("MOVING UP DIFF: " + (prevy+1) + "," + prevx);
+				map.moveRobot(prevy+1, prevx, angle);
+			}
+			else if(diff == DOWN && canMoveDown)
+			{
+				System.out.println("MOVING DOWN DIFF: " + (prevy-1) + "," + prevx);
+				map.moveRobot(prevy-1, prevx, angle);
+			}
+			else if(diff == LEFT && canMoveLeft)
+			{
+				System.out.println("MOVING LEFT DIFF: " + prevy + "," + (prevx-1));
+				map.moveRobot(prevy, prevx-1, angle);
+			}
+			else if(diff == RIGHT && canMoveRight)
+			{
+				System.out.println("MOVING RIGHT DIFF: " + prevy + "," + (prevx+1));
+				map.moveRobot(prevy, prevx+1, angle);
+			}
+			else
+			{
+				System.out.println("NOT MOVING DIFF: " + prevy + "," + prevx);
+			}
+		}
+		// Move in diff opposite
+		else if(random >= .80 && random < .90)
+		{
+			if(oppositediff == UP && canMoveUp)
+			{
+				System.out.println("MOVING UP DIFFOPP: " + (prevy+1) + "," + prevx);
+				map.moveRobot(prevy+1, prevx, angle);
+			}
+			else if(oppositediff == DOWN && canMoveDown)
+			{
+				System.out.println("MOVING DOWN DIFFOPP: " + (prevy-1) + "," + prevx);
+				map.moveRobot(prevy-1, prevx, angle);
+			}
+			else if(oppositediff == LEFT && canMoveLeft)
+			{
+				System.out.println("MOVING LEFT DIFFOPP: " + prevy + "," + (prevx-1));
+				map.moveRobot(prevy, prevx-1, angle);
+			}
+			else if(oppositediff == RIGHT && canMoveRight)
+			{
+				System.out.println("MOVING RIGHT DIFFOPP: " + prevy + "," + (prevx+1));
+				map.moveRobot(prevy, prevx+1, angle);
+			}
+			else
+			{
+				System.out.println("NOT MOVING DIFF: " + prevy + "," + prevx);
+			}
+		}
+		else
+		{
+			System.out.println("NOT MOVING: " + prevy + "," + prevx);
+		}
+		
+		return false;
 	}
 	
 	/**
