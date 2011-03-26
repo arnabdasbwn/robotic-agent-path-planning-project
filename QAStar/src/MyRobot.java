@@ -2,6 +2,9 @@ import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.PriorityQueue;
 import java.util.Vector;
 
@@ -62,6 +65,9 @@ public class MyRobot {
 	private JPanel panel;
 	private AStarState[][] aTable;
 	private PriorityQueue<AStarState> pQueue;
+	private int cutShort = 0;
+	private JButton resetQTable;
+	private long lastClick;
 	
 	public MyRobot() 
 	{
@@ -92,6 +98,7 @@ public class MyRobot {
 		
 		qLearning = new JButton("Start");
 		directPathfromQTable = new JButton("Direct Path");
+		resetQTable = new JButton("Reset");
 		
 		aStar = new JButton("Start");
 
@@ -111,14 +118,26 @@ public class MyRobot {
 		
 		directPathfromQTable.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                qLearningGreedyButtonActionPerformed(evt);
+                qLearningDirectButtonActionPerformed(evt);
+            }
+        });
+		
+		resetQTable.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                resetQTable(evt);
+            }
+        });
+		
+		directPathfromQTable.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                qLearningDirectButtonActionPerformed(evt);
             }
         });
 		
 		topPanel.setLayout(new GridLayout(3,4));
 		topPanel.setBorder(BorderFactory.createTitledBorder("Q Learning"));
 		topPanel.add(qLearning);
-		topPanel.add(new JLabel());
+		topPanel.add(resetQTable);
 		topPanel.add(directPathfromQTable);
 		topPanel.add(new JLabel());
 		topPanel.add(learningRateFieldLabel);
@@ -151,6 +170,7 @@ public class MyRobot {
 	private void initQTable()
 	{
 		int[][] tmpMap = map.getMap();
+		qTable = null;
 		qTable = new State[tmpMap.length][tmpMap[0].length];
 		
 		for(int i = 0; i < tmpMap.length; i++)
@@ -176,9 +196,20 @@ public class MyRobot {
 		colField.repaint();
 	}
 
-	
-	private void qLearningGreedyButtonActionPerformed(ActionEvent evt)
+	private void resetQTable(ActionEvent evt) 
 	{
+		initQTable();
+	}
+	
+	private void qLearningDirectButtonActionPerformed(ActionEvent evt)
+	{
+		if(evt.getWhen() < lastClick + 1)
+		{
+			return;
+		}
+		
+		lastClick = evt.getWhen();
+		
 		if(!updatelearningParameters())
 			return;
 		
@@ -197,14 +228,14 @@ public class MyRobot {
 			try 
 			{
 				Thread.sleep(1000);
+				goalFound = directMove();
 			} catch (InterruptedException e) 
 			{
 				e.printStackTrace();
 			}
-			goalFound = greedy();
 		}
 	}
-	
+
 	private void qLearningButtonActionPerformed(ActionEvent evt)
 	{
 		if(updatelearningParameters())
@@ -236,8 +267,7 @@ public class MyRobot {
 		boolean goalFound = false;
 		
 		for(int i = 0; i < numIter; i++)
-		{
-			
+		{	
 			randomizeStart();
 			
 			goalFound = false;
@@ -246,7 +276,8 @@ public class MyRobot {
 				goalFound = randomWalk(false);
 				if (j == maxSteps -1)
 				{
-					System.out.println("Max steps reached, cutting search short." + i);
+//					System.out.println("Max steps reached, cutting search short." + i);
+					cutShort++;
 				}
 			}
 		}
@@ -276,18 +307,29 @@ public class MyRobot {
 
 	private void printQTable() 
 	{
-		System.out.format("Q,up,down,left,right\n");
-		
-		for(int i = qTable.length - 1; i >= 0; i--)
-		{
-			for(int j = 0; j < qTable[0].length; j++)
+		try {
+			File output = new File("output.csv");
+			output.createNewFile();
+			FileWriter out = new FileWriter(output);
+			out.write("Q,up,down,left,right\n");
+			
+			for(int i = qTable.length - 1; i >= 0; i--)
 			{
-				System.out.println(qTable[i][j]);
+				for(int j = 0; j < qTable[0].length; j++)
+				{
+					out.write(qTable[i][j] + "\n");
+				}
 			}
+			
+			out.write("cut short, " + cutShort);
+			out.flush();
+			out.close();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 	
-	private boolean greedy()
+	private boolean directMove()
 	{	
 		int[] robot = map.getRobotLocation();
 		
