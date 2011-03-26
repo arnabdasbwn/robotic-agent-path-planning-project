@@ -35,5 +35,16 @@ while (currentPosition.previous)
 	solution.add(currentPosition.previous)
 
 solution = solution.reverse()
-	
-		
+
+=====================================================================
+Into to A*
+
+
+
+A* (Pronounced "A Star") is an algorithm for searching for a path in an efficient way. It takes concepts from Dijkstra's shortest path algorithm and adds distance remaining to goal as an added heuristic. If we consider the distance traveled so far (Just as Dijkstra's does) and set that into a value named 'g' and the euclidian distance to the goal assuming no obsticles in the way to a value named 'h', then our heuristic can be defined as 'f' where:
+
+f = g + h
+or
+"A Star Heuristic" = "Distance traveled so far" + "Distance directly to goal from new position"
+
+A* requires a discrete environment, any continuous environment must be discretized into a set of waypoints and connections between them.
