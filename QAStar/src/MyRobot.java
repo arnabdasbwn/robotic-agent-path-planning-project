@@ -33,13 +33,13 @@ public class MyRobot {
 	public static final int RIGHT = 3;
 		
 	
-	JButton qLearning;
-	JButton aStar;
-	JButton directPathFromQTable;
-	JPanel topPanel;
-	JFrame frame;
+	private JButton qLearning;
+	private JButton aStar;
+	private JButton directPathFromQTable;
+	private JPanel topPanel;
+	private JFrame frame;
 
-	MapGUI map;
+	private MapGUI map;
 	
 	private float discountFactor;
 	private float learningRate;
