@@ -47,4 +47,6 @@ f = g + h
 or
 "A Star Heuristic" = "Distance traveled so far" + "Distance directly to goal from new position"
 
-A* requires a discrete environment, any continuous environment must be discretized into a set of waypoints and connections between them.
+= Problems
+- A* requires a discrete environment, any continuous environment must be discretized into a set of waypoints and connections between them.
+- In the continous A*, because the target may not be at a waypoint, if a waypoint is almost halfway between agent and target, but closer to the target further from the agent, the agent may walk passed the target to the waypoint nearest to the target and then come back to the target. It would be possible to avoid this by checking if there is a clear path to the target, but then it could not be guarnteed that the agent does not brush against the wall enroute to the target.
