@@ -35,7 +35,7 @@ public class MyRobot {
 	
 	JButton qLearning;
 	JButton aStar;
-	JButton directPathfromQTable;
+	JButton directPathFromQTable;
 	JPanel topPanel;
 	JFrame frame;
 
@@ -67,7 +67,7 @@ public class MyRobot {
 	private PriorityQueue<AStarState> pQueue;
 	private int cutShort = 0;
 	private JButton resetQTable;
-	private long lastClick;
+	private JButton directPathDetermineQTable;
 	
 	public MyRobot() 
 	{
@@ -97,7 +97,8 @@ public class MyRobot {
 		maxStepsFieldLabel = new JLabel("Max Steps per Game");
 		
 		qLearning = new JButton("Start");
-		directPathfromQTable = new JButton("Direct Path");
+		directPathFromQTable = new JButton("Direct Path Sensor Error");
+		directPathDetermineQTable = new JButton("Direct Path No Sensor Error");
 		resetQTable = new JButton("Reset");
 		
 		aStar = new JButton("Start");
@@ -116,9 +117,15 @@ public class MyRobot {
             }
         });
 		
-		directPathfromQTable.addActionListener(new java.awt.event.ActionListener() {
+		directPathFromQTable.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                qLearningDirectButtonActionPerformed(evt);
+                qLearningDirectButtonActionPerformed(evt, true);
+            }
+        });
+		
+		directPathDetermineQTable.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                qLearningDirectButtonActionPerformed(evt, false);
             }
         });
 		
@@ -128,18 +135,12 @@ public class MyRobot {
             }
         });
 		
-		directPathfromQTable.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                qLearningDirectButtonActionPerformed(evt);
-            }
-        });
-		
 		topPanel.setLayout(new GridLayout(3,4));
 		topPanel.setBorder(BorderFactory.createTitledBorder("Q Learning"));
 		topPanel.add(qLearning);
 		topPanel.add(resetQTable);
-		topPanel.add(directPathfromQTable);
-		topPanel.add(new JLabel());
+		topPanel.add(directPathFromQTable);
+		topPanel.add(directPathDetermineQTable);
 		topPanel.add(learningRateFieldLabel);
 		topPanel.add(learningRateField);
 		topPanel.add(discountFactorFieldLabel);
@@ -201,15 +202,8 @@ public class MyRobot {
 		initQTable();
 	}
 	
-	private void qLearningDirectButtonActionPerformed(ActionEvent evt)
-	{
-		if(evt.getWhen() < lastClick + 1)
-		{
-			return;
-		}
-		
-		lastClick = evt.getWhen();
-		
+	private void qLearningDirectButtonActionPerformed(ActionEvent evt, boolean error)
+	{	
 		if(!updatelearningParameters())
 			return;
 		
@@ -228,7 +222,7 @@ public class MyRobot {
 			try 
 			{
 				Thread.sleep(1000);
-				goalFound = directMove();
+				goalFound = directMove(error);
 			} catch (InterruptedException e) 
 			{
 				e.printStackTrace();
@@ -329,7 +323,7 @@ public class MyRobot {
 		}
 	}
 	
-	private boolean directMove()
+	private boolean directMove(boolean error)
 	{	
 		int[] robot = map.getRobotLocation();
 		
@@ -409,8 +403,16 @@ public class MyRobot {
 		}
 		
 		qTable[s.point.y][s.point.x] = s;
-		boolean moveCorrect = moveRobot(s.point.y, s.point.x, next.point.y, next.point.x, angle);
-		return next.isGoal() && moveCorrect;
+		if(error)
+		{
+			boolean moveCorrect = moveRobot(s.point.y, s.point.x, next.point.y, next.point.x, angle);
+			return next.isGoal() && moveCorrect;
+		}
+		else
+		{
+			map.moveRobot(next.point.y, next.point.x, "N");
+			return next.isGoal();
+		}
 	}
 
 	private boolean takeBestPath(int numerator, int denominator)
