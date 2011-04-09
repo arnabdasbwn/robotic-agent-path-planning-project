@@ -8,12 +8,12 @@ static const int
 	NUM_LINE_SENSORS = 8;
 static char
 	lineSensor[NUM_LINE_SENSORS];
-OrangutanMotors
-	motors;
-OrangutanDigital
-	muxSelector;
-OrangutanAnalog
-	analogInput;
+//OrangutanMotors
+//	motors;
+//OrangutanDigital
+//	muxSelector;
+//OrangutanAnalog
+//	analogInput;
 //OrangutanSerial
 //	serialDebug;
 
@@ -28,5 +28,6 @@ void initialize();
 void sense();
 MotorControl think();
 void act(MotorControl desiredSpeeds);
+void sendConstMessage(const char* message);
 
 #endif
