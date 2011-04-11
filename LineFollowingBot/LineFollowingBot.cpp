@@ -9,11 +9,14 @@ int main()
 {
 	MotorControl
 		speeds;
+		
+	initialize();
+	char
+		*message = "Hello Serial!\r\n";
+	OrangutanSerial::sendBlocking(message, strlen(message));
 	//programRunning will always be true... I just hate while(1)'s.
 	while (programRunning)
 	{
-		//OrangutanSerial::sendBlocking("Hello Serial!", 13);
-		sendConstMessage("Hello Serial!");
 		sense();
 		speeds = think();
 		act(speeds);
@@ -24,6 +27,8 @@ int main()
 //Initialize board.
 void initialize()
 {
+	OrangutanAnalog::setMode(MODE_10_BIT);//MODE_8_BIT
+
 	//Initilize the outputs to the mux
 	OrangutanDigital::setOutput(IO_B0, LOW);
 	OrangutanDigital::setOutput(IO_B1, LOW);
@@ -50,18 +55,27 @@ void sense()
 	//over to the ones place where neccicary incase of the
 	//unknown result of sending something other than 0 or 1
 	//to setOutput()
-	OrangutanDigital::setOutput(IO_B0, lineSensorIndex & 1);
-	OrangutanDigital::setOutput(IO_B1, (lineSensorIndex & 2) >> 1);
-	OrangutanDigital::setOutput(IO_B2, (lineSensorIndex & 4) >> 2);
+
+	//OrangutanDigital::setOutput(IO_B0, lineSensorIndex & 1);
+	//OrangutanDigital::setOutput(IO_B1, (lineSensorIndex & 2) >> 1);
+	//OrangutanDigital::setOutput(IO_B2, (lineSensorIndex & 4) >> 2);
+
+	OrangutanDigital::setOutput(IO_B0, 0);
+	OrangutanDigital::setOutput(IO_B1, 0);
+	OrangutanDigital::setOutput(IO_B2, 0);
 
 	//Not sure if the mux has a response time or if it's ready imidiately
 	//after switching pins so I'm adding a small delay here just in case.
-	delay_ms(5);
+	delay_ms(1000);
 
 	//The mux controls what value is read by analogInput
 	lineSensor[lineSensorIndex % 8] = OrangutanAnalog::readMillivolts(0);
 	//lineSensor[lineSensorIndex % 8] = OrangutanAnalog::toMillivolts(OrangutanAnalog::read(0));
-
+	char
+		message[256];
+    memset(message, 0, 256);
+	sprintf (message, "Sensor %d value = %d\r\n", lineSensorIndex % 8, lineSensor[lineSensorIndex]);
+	OrangutanSerial::sendBlocking(message, strlen(message));
 	//Intenionally allowing "lineSensorIndex" to rollover, it should work out.
 	lineSensorIndex++;
 }
@@ -101,7 +115,6 @@ MotorControl think()
 	motorControl.leftMotorSpeed = lineSensor[0];// >> 2;
 	motorControl.rightMotorSpeed = lineSensor[7];// >> 2;
 	/************************************/
-	delay_ms(500);
 	return motorControl;
 }
 
@@ -135,12 +148,15 @@ void act(MotorControl desiredSpeeds)
 	rightMotorSpeed = desiredSpeeds.rightMotorSpeed;
 	****************************************************/
 	//motors.setSpeeds(leftMotorSpeed,rightMotorSpeed);
-	OrangutanMotors::setSpeeds(25,25);
+	//OrangutanMotors::setSpeeds(25,25);
 }
 
+// Failed attempt to create a function that can send a const
+// with no compile warnings.
 void sendConstMessage(const char* message)
 {
 	char
 		*data = static_cast<char*>(malloc(sizeof(char) * strlen(message)));
 	OrangutanSerial::sendBlocking(data, strlen(data));
+	free(data);
 }
