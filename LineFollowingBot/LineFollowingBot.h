@@ -6,28 +6,13 @@ bool
 static const int
 	MAX_SPEED = 255,
 	NUM_LINE_SENSORS = 8;
-static char
+static unsigned int
 	lineSensor[NUM_LINE_SENSORS];
-//OrangutanMotors
-//	motors;
-//OrangutanDigital
-//	muxSelector;
-//OrangutanAnalog
-//	analogInput;
-//OrangutanSerial
-//	serialDebug;
-
-struct MotorControl
-{
-	int
-		leftMotorSpeed,
-		rightMotorSpeed;
-};
 
 void initialize();
 void sense();
-MotorControl think();
-void act(MotorControl desiredSpeeds);
+int think();
+void act(int turnRate);
 void sendConstMessage(const char* message);
 
 #endif

@@ -7,10 +7,9 @@
 
 int main()
 {
-	MotorControl
-		speeds;
-		
 	initialize();
+	int
+		turn = 0;
 	char
 		*message = "Hello Serial!\r\n";
 	OrangutanSerial::sendBlocking(message, strlen(message));
@@ -18,8 +17,17 @@ int main()
 	while (programRunning)
 	{
 		sense();
-		speeds = think();
-		act(speeds);
+		turn = think();
+
+		/*char
+			message[256];
+	    memset(message, 0, 256);
+		sprintf (message, "turn = %d\r\n", turn);
+		OrangutanSerial::sendBlocking(message, strlen(message));*/
+
+		act(turn);
+		//OrangutanMotors::setSpeeds(-50,0);
+
 	}
 	return 0;
 }
@@ -28,11 +36,6 @@ int main()
 void initialize()
 {
 	OrangutanAnalog::setMode(MODE_10_BIT);//MODE_8_BIT
-
-	//Initilize the outputs to the mux
-	OrangutanDigital::setOutput(IO_B0, LOW);
-	OrangutanDigital::setOutput(IO_B1, LOW);
-	OrangutanDigital::setOutput(IO_B2, LOW);
 
 	//Initialize sensor readings to zero.
 	for (int i = 0; i < NUM_LINE_SENSORS; i++)
@@ -45,110 +48,127 @@ void initialize()
 //Grab sensor data.
 void sense()
 {
-	static unsigned char
-		lineSensorIndex = 0;
-
-	//Set mux inputs for which pin to read from
-	//This should work because it looks at the first
-	//three bits and each output to the mux is a mask looking
-	//at one of each of the three bits. The result is shifted
-	//over to the ones place where neccicary incase of the
-	//unknown result of sending something other than 0 or 1
-	//to setOutput()
-
-	//OrangutanDigital::setOutput(IO_B0, lineSensorIndex & 1);
-	//OrangutanDigital::setOutput(IO_B1, (lineSensorIndex & 2) >> 1);
-	//OrangutanDigital::setOutput(IO_B2, (lineSensorIndex & 4) >> 2);
-
-	OrangutanDigital::setOutput(IO_B0, 0);
-	OrangutanDigital::setOutput(IO_B1, 0);
-	OrangutanDigital::setOutput(IO_B2, 0);
-
-	//Not sure if the mux has a response time or if it's ready imidiately
-	//after switching pins so I'm adding a small delay here just in case.
-	delay_ms(1000);
+	float
+		filterStrength = 0.1f; //Larger number means less responsive to change.
 
 	//The mux controls what value is read by analogInput
-	lineSensor[lineSensorIndex % 8] = OrangutanAnalog::readMillivolts(0);
-	//lineSensor[lineSensorIndex % 8] = OrangutanAnalog::toMillivolts(OrangutanAnalog::read(0));
-	char
-		message[256];
-    memset(message, 0, 256);
-	sprintf (message, "Sensor %d value = %d\r\n", lineSensorIndex % 8, lineSensor[lineSensorIndex]);
-	OrangutanSerial::sendBlocking(message, strlen(message));
-	//Intenionally allowing "lineSensorIndex" to rollover, it should work out.
-	lineSensorIndex++;
+	for (unsigned char i = 0; i < 8; i++)
+	{
+		lineSensor[i] = (1-filterStrength) * OrangutanAnalog::read(i) 
+						+ filterStrength * lineSensor[i];
+		/*char
+			message[256];
+	    memset(message, 0, 256);
+		sprintf (message, "Sensor %d value = %d\r\n", i, lineSensor[i]);
+		OrangutanSerial::sendBlocking(message, strlen(message));*/
+	}
 }
 
 //Decide what to do.
-MotorControl think()
+int think()
 {
-	MotorControl
-		motorControl;
-	/*****Ramp Motors up and down***
-	static bool
-		speedUp = true;
+	static const int
+		P = 35,
+		I = 0,
+		D = 0;
 	static int
-		motorSpeed = 0;
-	if (speedUp)
+		sumError = 0,
+		oldError = 0;
+	int
+		actual   = 0,
+		desired  = 0,
+		error    = 0,
+		dError   = 0;
+	
+	//Calculate Error
+	for (unsigned char i = 1; i < 7; i++)
 	{
-		motorSpeed++;
+		if (i < 4)
+		{
+			if (lineSensor[i] > 400)
+			{
+				actual -= 1 * (4 - i);//lineSensor[i];
+			}
+		}
+		else
+		{
+			if (lineSensor[i] > 400)
+			{
+				actual += 1 * (i - 3);//lineSensor[i];
+			}
+		}
 	}
-	else
-	{
-		motorSpeed--;
-	}
-	if (motorSpeed >= 250)
-	{
-		speedUp = false;
-	}
-	if (motorSpeed <= -250)
-	{
-		speedUp = true;
-	}
-	motorControl.leftMotorSpeed = motorSpeed;
-	motorControl.rightMotorSpeed = motorSpeed;
-	**********************************/
-	//Temporary controls just to show that it is reading data.
-	//lineSensor values range between [0,1023] but I only want
-	//to send the motors [0,255] hence, the divide by 4.
-	motorControl.leftMotorSpeed = lineSensor[0];// >> 2;
-	motorControl.rightMotorSpeed = lineSensor[7];// >> 2;
-	/************************************/
-	return motorControl;
+
+	/*char
+		message[256];
+    memset(message, 0, 256);
+	sprintf (message, "actual difference = %d\r\n", actual);
+	OrangutanSerial::sendBlocking(message, strlen(message));*/
+
+	//The P multiplicand
+	error = desired - actual;
+
+	//The D multiplicand
+	dError = error - oldError;
+
+	//The I multiplicand
+	sumError += error;
+
+	//Set old error to current
+	oldError = error;
+
+	//Turn rate
+	return P * error + I * sumError + D * dError;
 }
 
 //Perform some action.
-void act(MotorControl desiredSpeeds)
+void act(int turnRate)
 {
+	static const int
+		forward = 100,
+		ramp = 2;
 	static int
 		leftMotorSpeed = 0,
 		rightMotorSpeed = 0;
+	int
+		desiredLeftMotorSpeed = 0,
+		desiredRightMotorSpeed = 0;
 
-	/************Forced Ramping*************************/
-	if (desiredSpeeds.leftMotorSpeed > leftMotorSpeed)
+		desiredLeftMotorSpeed = (forward / 2) + (turnRate / 2);
+		desiredRightMotorSpeed = (forward / 2) - (turnRate / 2);
+
+	/************Forced Ramping*************************
+	if (desiredLeftMotorSpeed > leftMotorSpeed)
 	{
-		leftMotorSpeed++;
+		leftMotorSpeed += ramp;
 	}
-	else if(desiredSpeeds.leftMotorSpeed < leftMotorSpeed)
+	else if(desiredLeftMotorSpeed < leftMotorSpeed)
 	{
-		leftMotorSpeed--;
+		leftMotorSpeed -= ramp;
 	}
 
-	if (desiredSpeeds.rightMotorSpeed > rightMotorSpeed)
+	if (desiredRightMotorSpeed > rightMotorSpeed)
 	{
-		rightMotorSpeed++;
+		rightMotorSpeed += ramp;
 	}
-	else if(desiredSpeeds.rightMotorSpeed < rightMotorSpeed)
+	else if(desiredRightMotorSpeed < rightMotorSpeed)
 	{
-		rightMotorSpeed--;
+		rightMotorSpeed -= ramp;
 	}
 	/*******************No Ramping***********************
 	leftMotorSpeed = desiredSpeeds.leftMotorSpeed;
 	rightMotorSpeed = desiredSpeeds.rightMotorSpeed;
 	****************************************************/
-	//motors.setSpeeds(leftMotorSpeed,rightMotorSpeed);
-	//OrangutanMotors::setSpeeds(25,25);
+
+	//char
+	//	message[256];
+    //memset(message, 0, 256);
+	//sprintf (message, "MotorSpeeds (%d, %d)\r\n", desiredLeftMotorSpeed, desiredRightMotorSpeed);
+	//OrangutanSerial::sendBlocking(message, strlen(message));
+
+
+	OrangutanMotors::setSpeeds(desiredLeftMotorSpeed,desiredRightMotorSpeed);
+	//OrangutanMotors::setSpeeds(leftMotorSpeed,rightMotorSpeed);
 }
 
 // Failed attempt to create a function that can send a const
