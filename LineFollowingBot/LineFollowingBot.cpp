@@ -1,6 +1,9 @@
 #include "stdio.h"
+#include "math.h"
 #include "stdlib.h"
 #include "string.h"
+//#include <cmath>
+#include <stdlib.h>
 //#include <iostream>
 #include <pololu/orangutan>
 #include "LineFollowingBot.h"
@@ -43,6 +46,8 @@ void initialize()
 		lineSensor[i] = 0;
 	}
 	OrangutanSerial::setBaudRate(9600);
+	OrangutanTime::reset();
+
 }
 
 //Grab sensor data.
@@ -79,6 +84,8 @@ int think()
 		desired  = 0,
 		error    = 0,
 		dError   = 0;
+	static unsigned long
+		lastFrameTime = OrangutanTime::us();
 	
 	//Calculate Error
 	for (unsigned char i = 1; i < 7; i++)
@@ -87,14 +94,14 @@ int think()
 		{
 			if (lineSensor[i] > 400)
 			{
-				actual -= 1 * (4 - i);//lineSensor[i];
+				actual -= 2 * (4 - i);//lineSensor[i];
 			}
 		}
 		else
 		{
 			if (lineSensor[i] > 400)
 			{
-				actual += 1 * (i - 3);//lineSensor[i];
+				actual += 2 * (i - 3);//lineSensor[i];
 			}
 		}
 	}
@@ -109,13 +116,24 @@ int think()
 	error = desired - actual;
 
 	//The D multiplicand
-	dError = error - oldError;
-
+	dError = (error - oldError) / (OrangutanTime::ms() - lastFrameTime);
+	/*
+	char
+		message[256];
+    memset(message, 0, 256);
+	sprintf (message, "dError = %d -", dError);
+	OrangutanSerial::sendBlocking(message, strlen(message));
+	memset(message, 0, 256);
+	sprintf (message, "deltaT = %d\r\n", dError);
+	OrangutanSerial::sendBlocking(message, OrangutanTime::ms() - lastFrameTime);
+*/
 	//The I multiplicand
-	sumError += error;
+	sumError += error * (OrangutanTime::ms() - lastFrameTime);
 
 	//Set old error to current
 	oldError = error;
+
+	lastFrameTime = OrangutanTime::ms();
 
 	//Turn rate
 	return P * error + I * sumError + D * dError;
@@ -125,17 +143,25 @@ int think()
 void act(int turnRate)
 {
 	static const int
-		forward = 100,
+		forward = 180,
 		ramp = 2;
 	static int
 		leftMotorSpeed = 0,
 		rightMotorSpeed = 0;
 	int
 		desiredLeftMotorSpeed = 0,
-		desiredRightMotorSpeed = 0;
+		desiredRightMotorSpeed = 0,
+		forwardComponent = forward / 2,
+		turnComponent = turnRate / 2;
 
-		desiredLeftMotorSpeed = (forward / 2) + (turnRate / 2);
-		desiredRightMotorSpeed = (forward / 2) - (turnRate / 2);
+		//Retain full ability to turn even when speed is maxxed.
+		if (forwardComponent + abs(turnComponent) > 255)
+		{
+			forwardComponent = 255 - abs(turnComponent);
+		}
+
+		desiredLeftMotorSpeed = forwardComponent + turnComponent;
+		desiredRightMotorSpeed = forwardComponent - turnComponent;
 
 	/************Forced Ramping*************************
 	if (desiredLeftMotorSpeed > leftMotorSpeed)
