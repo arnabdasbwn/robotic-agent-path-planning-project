@@ -98,20 +98,17 @@ int think()
 		message[256];
 
 	//Calculate Error
-	for (unsigned char i = 0; i < 8; i++)
+	for (unsigned char i = 0; i < NUM_LINE_SENSORS; i++)
 	{
-		if (i < 4)
+		if (lineSensor[i] > 400)
 		{
-			if (lineSensor[i] > 400)
+			if (i < 4) //NUM_LINE_SENSORS/2 + 1
 			{
-				actual -= 2 * (4 - i);//lineSensor[i];
+				actual -= 2 * (4 - i); //actual -= 2 * (NUM_LINE_SENSORS/2 + 1 - i)
 			}
-		}
-		else
-		{
-			if (lineSensor[i] > 400)
+			else
 			{
-				actual += 2 * (i - 3);//lineSensor[i];
+				actual += 2 * (i - 3); //actual += 2 * (i - NUM_LINE_SENSORS/2)
 			}
 		}
 	}
