@@ -1,6 +1,6 @@
-P 60
-I  0
-D  0
+P 60.00
+I  0.00
+D  0.00
 
 
 Time for Lap 0 is 77
@@ -18,10 +18,11 @@ Error for lap 5 is 3870
 Time for Lap 6 is 8387
 Error for lap 6 is 3830
 
+-----------------------
 
-P 60
-I  0
-D 10
+P 60.00
+I  0.00
+D 10.00
 
 Time for Lap 0 is 6391
 Error for lap 0 is 2753
@@ -39,9 +40,10 @@ Time for Lap 6 is 8747
 Error for lap 6 is 3843
 
 
-P 60
-I  0
-D 15
+-----------------------
+P 60.00
+I  0.00
+D 15.00
 
 Time for Lap 0 is 6439
 Error for lap 0 is 3570
@@ -117,6 +119,7 @@ Error for lap 5 is 3892
 Time for Lap 6 is 8848
 Error for lap 6 is 3693
 
+-----------------------
 P 60.00
 I  0.10
 D  0.00
@@ -174,6 +177,7 @@ Error for lap 5 is 3353
 Time for Lap 6 is 8710
 Error for lap 6 is 3100
 
+-----------------------
 P 50.00
 I  0.00
 D  0.00
@@ -215,6 +219,7 @@ Time for Lap 6 is 8302
 Error for lap 6 is 4001
 
 
+-----------------------
 P 50.00
 I  0.00
 D 15.00
@@ -259,18 +264,71 @@ P 50.00
 I  0.05
 D 10.00
 
+
+Time for Lap 0 is 6129
+Error for lap 0 is 3057
+Time for Lap 1 is 8236
+Error for lap 1 is 3831
+Time for Lap 2 is 8292
+Error for lap 2 is 3499
+Time for Lap 3 is 8351
+Error for lap 3 is 2995
+Time for Lap 4 is 8291
+Error for lap 4 is 3413
+Time for Lap 5 is 8287
+Error for lap 5 is 3692
+Time for Lap 6 is 8437
+Error for lap 6 is 3473
+
+
+-----------------------
 P 50.00
 I  0.05
 D 15.00
+
+
+Error for lap 0 is 6953
+Time for Lap 1 is 8314
+Error for lap 1 is 3409
+Time for Lap 2 is 8453
+Error for lap 2 is 3349
+Time for Lap 3 is 8372
+Error for lap 3 is 3587
+Time for Lap 4 is 8334
+Error for lap 4 is 3324
+Time for Lap 5 is 8411
+Error for lap 5 is 3241
+Time for Lap 6 is 8324
+Error for lap 6 is 3533
+-----------------------
 
 P 40.00
 I  0.00
 D  0.00
 
+
+Time for Lap 0 is 5920
+Error for lap 0 is 3362
+Time for Lap 1 is 8063
+Error for lap 1 is 4234
+Time for Lap 2 is 8219
+Error for lap 2 is 4181
+Time for Lap 3 is 8224
+Error for lap 3 is 4227
+Time for Lap 4 is 8231
+Error for lap 4 is 4191
+Time for Lap 5 is 8346
+Error for lap 5 is 4605
+Time for Lap 6 is 8350
+Error for lap 6 is 5031
+
+-----------------------
+
 P 40.00
 I  0.00
 D 10.00
 
+-----------------------
 P 40.00
 I  0.00
 D 15.00
