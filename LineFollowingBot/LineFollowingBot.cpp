@@ -14,7 +14,8 @@ int main()
 	int
 		turn = 0;
 	char
-		*message = "Hello Serial!             \r\n";
+		message[256];
+		strcpy(message,"Hello Serial!             \r\n");
 	OrangutanSerial::sendBlocking(message, strlen(message));
 	//programRunning will always be true... I just hate while(1)'s.
 	while (programRunning)
@@ -30,13 +31,37 @@ int main()
 
 		act(turn);
 		//OrangutanMotors::setSpeeds(-50,0);
-
-	
 	   	
-		sprintf (message, "I'm still alive! %u\r\n", OrangutanTime::ms());
-		sendMessage(message);
+		//sprintf (message, "I'm still alive! %u\r\n", OrangutanTime::ms());
+		//sendMessage(message);
 
 	}
+
+	while(true)
+	{
+		sendMessage("Printing gathered data\r\n");
+		OrangutanTime::delayMilliseconds(10);
+		memset(message, 0, 256);
+		sprintf(message, "Num Laps = %d\r\n", numLaps);
+		sendMessage(message);
+		OrangutanTime::delayMilliseconds(10);
+		for (unsigned char i = 0; i < LAPS_PER_RUN; i++)
+		{
+			memset(message, 0, 256);
+			sprintf(message, "Time for Lap %d is %u\r\n", i, lapTimeTable[i]);
+			sendMessage(message);
+			OrangutanTime::delayMilliseconds(10);
+			memset(message, 0, 256);
+			sprintf(message, "Error for lap %d is %u\r\n", i, totalError[i]);
+			sendMessage(message);
+			OrangutanTime::delayMilliseconds(10);
+		}
+		sendMessage("Program has run to completion.\r\n");
+		OrangutanTime::delayMilliseconds(10000);
+
+		programRunning = true;
+	}
+
 	return 0;
 }
 
@@ -78,46 +103,103 @@ void sense()
 int think()
 {
 	static const float
-		P = 25,
-		I = 0.0,
-		D = 15;
+		P             = 60.00,
+		I             =  0.00,
+		D             =  0.00;
 	static int
-		sumError = 0;
+		sumError      = 0;
 	static int
-		oldError = 0;
+		oldError      = 0;
 	int
-		dError   = 0;
+		dError        = 0;
 	int
-		actual   = 0,
-		desired  = 0,
-		error    = 0;
+		actual        = 0,
+		desired       = 0,
+		error         = 0,
+		numActivated  = 0;
 	static unsigned long
 		lastFrameTime = 0;
 	
 	char
-		message[256];
+		message[128];
 
 	//Calculate Error
 	for (unsigned char i = 0; i < NUM_LINE_SENSORS; i++)
 	{
 		if (lineSensor[i] > 400)
 		{
-			if (i < 4) //NUM_LINE_SENSORS/2 + 1
+			numActivated++;
+			if (i < 4) //NUM_LINE_SENSORS/2
 			{
-				actual -= 2 * (4 - i); //actual -= 2 * (NUM_LINE_SENSORS/2 + 1 - i)
+				actual -= (4 - i); //actual -= 2 * (NUM_LINE_SENSORS/2 - i)
 			}
 			else
 			{
-				actual += 2 * (i - 3); //actual += 2 * (i - NUM_LINE_SENSORS/2)
+				actual += (i - 3); //actual += 2 * (i - NUM_LINE_SENSORS/2 - 1)
 			}
 		}
 	}
 
+	//We went off track.
+	if (numActivated == 0)
+	{
+		noneActivated = true;
+		allActivated  = false;
+		lapStarted = false;
+	}
+	//We've completed a lap.
+	else if (numActivated == NUM_LINE_SENSORS)
+	{
+		//TODO: Store this into an array!
+		unsigned long lapTime = OrangutanTime::ms() - lapStartTime;
+
+		//memset(message, 0, 128);
+		//sprintf (message, "All Activated, lapStarted = %u\r\n", lapStarted);
+		//sendMessage(message);
+		//If we just completed a lap
+		if (lapStarted)
+		{
+			unsigned long lapTime = OrangutanTime::ms() - lapStartTime;
+			lapTimeTable[numLaps] = lapTime;
+			memset(message, 0, 128);
+			sprintf (message, "lapTime = %u \r\n", lapTime);
+			sendMessage(message);
+			numLaps++;
+			if (numLaps == LAPS_PER_RUN)
+			{
+				programRunning = false;
+			}
+		}
+		noneActivated = false;
+		allActivated  = true;
+		lapStarted = false;
+	}
+	//We are trying to follow the line.
+	else
+	{
+		//If we just crossed the line
+		if (allActivated)
+		{
+			lapStarted = true;
+			lapStartTime = OrangutanTime::ms();
+			//for (unsigned char i = 0; i < LAPS_PER_RUN; i++)
+			//{
+			//	totalError[i] = 0; // WTF ???????????
+			//}
+		}
+		noneActivated = false;
+		allActivated  = false;
+	}
+
+
 	//The P multiplicand
 	error = desired - actual;
 
+	
+	totalError[numLaps] += abs(error);
+	
 	//The D multiplicand
-	dError = (error - oldError) / (long)((OrangutanTime::ms() - lastFrameTime));
+	dError = (2 * error - oldError) / (long)((OrangutanTime::ms() - lastFrameTime));
 	
 
 	//sendMessage(message);
@@ -146,7 +228,7 @@ int think()
 void act(int turnRate)
 {
 	static const int
-		forward = 500;
+		forward = 300;
 		//ramp = 2;
 	//static int
 	//	leftMotorSpeed = 0,
@@ -189,14 +271,25 @@ void act(int turnRate)
 	//rightMotorSpeed = desiredSpeeds.rightMotorSpeed;
 	/****************************************************/
 
-	//char
-	//	message[256];
-    //memset(message, 0, 256);
-	//sprintf (message, "MotorSpeeds (%d, %d)\r\n", desiredLeftMotorSpeed, desiredRightMotorSpeed);
-	//OrangutanSerial::sendBlocking(message, strlen(message));
+ 	if (!( -255 < desiredLeftMotorSpeed  || desiredLeftMotorSpeed  < 255
+ 		|| -255 < desiredRightMotorSpeed || desiredRightMotorSpeed < 255))
+	{
+		char
+			message[256];
+	    memset(message, 0, 256);
+		sprintf (message, "Overspeed! Turn Rate %d\r\n", turnRate);
+		sendMessage(message);
+	}
 
-
-	OrangutanMotors::setSpeeds(desiredLeftMotorSpeed, desiredRightMotorSpeed);
+	if (noneActivated || !programRunning)
+	{
+		OrangutanMotors::setSpeeds(0,0);
+		sendMessage("Off Track\r\n");
+	}
+	else
+	{
+		OrangutanMotors::setSpeeds(desiredLeftMotorSpeed, desiredRightMotorSpeed);
+	}
 	//OrangutanMotors::setSpeeds(0,0);
 }
 
