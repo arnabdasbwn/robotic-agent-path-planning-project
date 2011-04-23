@@ -61,3 +61,43 @@ Error for lap 6 is 4077
 P 60.00
 I  0.05
 D  0.00
+
+Time for Lap 0 is 6186
+Error for lap 0 is 2304
+Time for Lap 1 is 7945
+Error for lap 1 is 3225
+Time for Lap 2 is 8079
+Error for lap 2 is 2906
+Time for Lap 3 is 8209
+Error for lap 3 is 3135
+Time for Lap 4 is 8213
+Error for lap 4 is 3024
+Time for Lap 5 is 8253
+Error for lap 5 is 3021
+Time for Lap 6 is 8234
+Error for lap 6 is 3233
+
+P 60.00
+I  0.05
+D 10.00
+
+
+Time for Lap 0 is 6368
+Error for lap 0 is 2686
+Time for Lap 1 is 8604
+Error for lap 1 is 4059
+Time for Lap 2 is 8683
+Error for lap 2 is 3728
+Time for Lap 3 is 8520
+Error for lap 3 is 3527
+Time for Lap 4 is 8815
+Error for lap 4 is 3491
+Time for Lap 5 is 8876
+Error for lap 5 is 3796
+Time for Lap 6 is 8764
+Error for lap 6 is 3531
+
+
+P 60.00
+I  0.05
+D 15.00
