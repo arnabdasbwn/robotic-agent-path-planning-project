@@ -39,7 +39,7 @@ int randInt()
 
 int randIntRange(int minVal, int maxVal)
 {
-	return ((maxVal - minVal) * randInt() + minVal) / maxPrime;
+	return (maxVal - minVal) * randFloat() + minVal;
 }
 
 float randFloat()
