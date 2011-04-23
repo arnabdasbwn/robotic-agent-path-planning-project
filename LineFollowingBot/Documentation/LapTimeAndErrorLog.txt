@@ -23,8 +23,20 @@ P 60
 I  0
 D 10
 
-
-
+Time for Lap 0 is 6391
+Error for lap 0 is 2753
+Time for Lap 1 is 8406
+Error for lap 1 is 3341
+Time for Lap 2 is 8400
+Error for lap 2 is 3754
+Time for Lap 3 is 8534
+Error for lap 3 is 3665
+Time for Lap 4 is 8645
+Error for lap 4 is 3608
+Time for Lap 5 is 8766
+Error for lap 5 is 4192
+Time for Lap 6 is 8747
+Error for lap 6 is 3843
 
 
 P 60
@@ -46,6 +58,6 @@ Error for lap 5 is 3674
 Time for Lap 6 is 8585
 Error for lap 6 is 4077
 
-P 60
-I  0
-D 10
+P 60.00
+I  0.05
+D  0.00
