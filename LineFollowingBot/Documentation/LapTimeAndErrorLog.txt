@@ -325,20 +325,20 @@ P 50.00
 I  0.10
 D 15.00
 
-Time for Lap 0 is 6047
-Error for lap 0 is 2856
-Time for Lap 1 is 16
-Error for lap 1 is 16
-Time for Lap 2 is 8
-Error for lap 2 is 2
-Time for Lap 3 is 8353
-Error for lap 3 is 3980
-Time for Lap 4 is 8198
-Error for lap 4 is 3135
-Time for Lap 5 is 8362
-Error for lap 5 is 2865
-Time for Lap 6 is 8367
-Error for lap 6 is 3349
+Time for Lap 0 is 6316
+Error for lap 0 is 3441
+Time for Lap 1 is 8261
+Error for lap 1 is 3677
+Time for Lap 2 is 8464
+Error for lap 2 is 4105
+Time for Lap 3 is 8404
+Error for lap 3 is 3597
+Time for Lap 4 is 8744
+Error for lap 4 is 3948
+Time for Lap 5 is 8729
+Error for lap 5 is 3788
+Time for Lap 6 is 8651
+Error for lap 6 is 3661
 -----------------------
 P 40.00
 I  0.00
@@ -511,3 +511,23 @@ Error for lap 5 is 3411
 Time for Lap 6 is 8372
 Error for lap 6 is 3229
 -----------------------
+
+RETEST OF
+P = 60.00
+I =  0.00
+D =  0.00
+
+Time for Lap 0 is 6167
+Error for lap 0 is 2787
+Time for Lap 1 is 8459
+Error for lap 1 is 3887
+Time for Lap 2 is 8549
+Error for lap 2 is 4104
+Time for Lap 3 is 8666
+Error for lap 3 is 3835
+Time for Lap 4 is 8810
+Error for lap 4 is 3890
+Time for Lap 5 is 8906
+Error for lap 5 is 4397
+Time for Lap 6 is 8993
+Error for lap 6 is 4351
