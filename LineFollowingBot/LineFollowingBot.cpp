@@ -15,7 +15,7 @@ int main()
 		turn = 0;
 	char
 		message[256];
-		strcpy(message,"Hello Serial!             \r\n");
+		strcpy(message,"Hello Serial!\r\n");
 	OrangutanSerial::sendBlocking(message, strlen(message));
 	//programRunning will always be true... I just hate while(1)'s.
 	while (programRunning)
@@ -47,12 +47,33 @@ int main()
 		OrangutanTime::delayMilliseconds(10);
 		for (unsigned char i = 0; i < LAPS_PER_RUN; i++)
 		{
+			sendMessage("------------------------------\r\n");
+			OrangutanTime::delayMilliseconds(10);
 			memset(message, 0, 256);
-			sprintf(message, "Time for Lap %d is %u\r\n", i, lapTimeTable[i]);
+			sprintf(message, "Run %d stats:\r\n", i);
 			sendMessage(message);
 			OrangutanTime::delayMilliseconds(10);
 			memset(message, 0, 256);
-			sprintf(message, "Error for lap %d is %u\r\n", i, totalError[i]);
+			sprintf(message, "P = %f, I = %f, D = %f\r\n",
+				runStatHistory[i].P, runStatHistory[i].I, runStatHistory[i].D);
+			sendMessage(message);
+			OrangutanTime::delayMilliseconds(10);
+			memset(message, 0, 256);
+			sprintf(message, "Time for Lap %d is %u\r\n", i, runStatHistory[i].lapTime);
+			sendMessage(message);
+			OrangutanTime::delayMilliseconds(10);
+			memset(message, 0, 256);
+			sprintf(message, "Error for lap %d is %u\r\n", i, runStatHistory[i].totalError);
+			sendMessage(message);
+			OrangutanTime::delayMilliseconds(10);
+			
+			memset(message, 0, 256);
+			sprintf(message, "Best Run So Far (%.2f, %.2f, %.2f) time = %i error = %u\r\n",
+				runStatHistory[numLaps].bestP,
+				runStatHistory[numLaps].bestI,
+				runStatHistory[numLaps].bestD,
+				runStatHistory[numLaps].bestTime,
+				runStatHistory[numLaps].bestError);
 			sendMessage(message);
 			OrangutanTime::delayMilliseconds(10);
 		}
@@ -69,15 +90,38 @@ int main()
 void initialize()
 {
 	OrangutanAnalog::setMode(MODE_10_BIT);//MODE_8_BIT
-
-	//Initialize sensor readings to zero.
-	for (int i = 0; i < NUM_LINE_SENSORS; i++)
-	{
-		lineSensor[i] = 0;
-	}
 	OrangutanSerial::setBaudRate(9600);
 	OrangutanTime::reset();
 
+	//Initialize sensor readings and random seed..
+	for (int i = 0; i < NUM_LINE_SENSORS; i++)
+	{
+		lineSensor[i] = OrangutanAnalog::read(i);
+		randNum += lineSensor[i];
+	}
+	seedRand(randNum);
+
+	//Initialize first run statistics
+	bestRunStat.P          = 60.0;
+	bestRunStat.I          =  0.0;
+	bestRunStat.D          =  0.0;
+	bestRunStat.lapTime    = 9999;
+	bestRunStat.totalError = 9999;
+
+	currentRunStat.P          = 60.0;
+	currentRunStat.I          =  0.0;
+	currentRunStat.D          =  0.0;
+	currentRunStat.lapTime    =  0;
+	currentRunStat.totalError =  0;
+
+	for (int i = 3; i > 0; i--)
+	{
+		char
+			*message;
+		sprintf(message, "Program will start in %d\r\n", i)
+		printSerial(message);
+		OrangutanTime::delayMilliseconds();
+	}
 }
 
 //Grab sensor data.
@@ -91,21 +135,12 @@ void sense()
 	{
 		lineSensor[i] = (1-filterStrength) * OrangutanAnalog::read(i) 
 						+ filterStrength * lineSensor[i];
-		//char
-		//	message[256];
-	    //memset(message, 0, 256);
-		//sprintf (message, "Sensor %d value = %d\r\n", i, lineSensor[i]);
-		//OrangutanSerial::sendBlocking(message, strlen(message));
 	}
 }
 
 //Decide what to do.
 int think()
 {
-	static const float
-		P             = 60.00,
-		I             =  0.00,
-		D             =  0.00;
 	static int
 		sumError      = 0;
 	static int
@@ -150,21 +185,63 @@ int think()
 	//We've completed a lap.
 	else if (numActivated == NUM_LINE_SENSORS)
 	{
-		//TODO: Store this into an array!
 		unsigned long lapTime = OrangutanTime::ms() - lapStartTime;
 
-		//memset(message, 0, 128);
-		//sprintf (message, "All Activated, lapStarted = %u\r\n", lapStarted);
-		//sendMessage(message);
 		//If we just completed a lap
 		if (lapStarted)
 		{
-			unsigned long lapTime = OrangutanTime::ms() - lapStartTime;
-			lapTimeTable[numLaps] = lapTime;
+			//Record lap time
+			currentRunStat.lapTime = OrangutanTime::ms() - lapStartTime;
+			
+			runStatHistory[numLaps] = currentRunStat;
+
+						
 			memset(message, 0, 128);
-			sprintf (message, "lapTime = %u \r\n", lapTime);
+			sprintf (message, "bestRunStat(%f) > currentRunStat(%f) == %d\r\n",
+				bestRunStat.lapTime + bestRunStat.totalError > currentRunStat.lapTime + currentRunStat.totalError);
 			sendMessage(message);
+
+			//If current run is better than any previous found.
+			//(First run is usually bad, so we will always say second was worse to re-run it.)
+			if((bestRunStat.lapTime + bestRunStat.totalError > currentRunStat.lapTime + currentRunStat.totalError
+				&& numLaps != 0 && currentRunStat.lapTime > 7000)
+				|| bestRunStat.P == 0)
+			{
+				memset(message, 0, 128);
+				sendMessage("New Best Found!\r\n");
+				bestRunStat.P          = currentRunStat.P;
+				bestRunStat.I          = currentRunStat.I;
+				bestRunStat.D          = currentRunStat.D;
+				bestRunStat.lapTime    = currentRunStat.lapTime;
+				bestRunStat.totalError = currentRunStat.totalError;
+				runStatHistory[numLaps].bestP = currentRunStat.P;
+				runStatHistory[numLaps].bestI = currentRunStat.I;
+				runStatHistory[numLaps].bestD = currentRunStat.D;
+				runStatHistory[numLaps].bestTime = currentRunStat.lapTime;
+				runStatHistory[numLaps].bestError = currentRunStat.totalError;
+			}	
+
 			numLaps++;
+
+			//Calculate new P, I, D values
+			currentRunStat.P = bestRunStat.P + (float)annealNumerator/(float)annealDenominator * randFloatRange(-annealStepP, annealStepP);
+			currentRunStat.I = bestRunStat.I + (float)annealNumerator/(float)annealDenominator * randFloatRange(-annealStepI, annealStepI);
+			currentRunStat.D = bestRunStat.D + (float)annealNumerator/(float)annealDenominator * randFloatRange(-annealStepD, annealStepD);
+
+			annealNumerator--;
+
+			//Reset Runtime and error
+			currentRunStat.lapTime    = 0;
+			currentRunStat.totalError = 0;
+
+			//Print new P, I, D values
+			/*
+			memset(message, 0, 128);
+			sprintf (message, "CurrentBest = (%.2f, %.2f, %.2f), with time = %u and error = %u \r\n Starting P = %.2f, I = %.2f, D = %.2f\r\n",
+				bestRunStat.P, bestRunStat.I, bestRunStat.D, bestRunStat.lapTime, bestRunStat.totalError,
+				currentRunStat.P, currentRunStat.I, currentRunStat.D);
+			sendMessage(message);*/
+
 			if (numLaps == LAPS_PER_RUN)
 			{
 				programRunning = false;
@@ -172,7 +249,7 @@ int think()
 		}
 		noneActivated = false;
 		allActivated  = true;
-		lapStarted = false;
+		lapStarted    = false;
 	}
 	//We are trying to follow the line.
 	else
@@ -182,10 +259,6 @@ int think()
 		{
 			lapStarted = true;
 			lapStartTime = OrangutanTime::ms();
-			//for (unsigned char i = 0; i < LAPS_PER_RUN; i++)
-			//{
-			//	totalError[i] = 0; // WTF ???????????
-			//}
 		}
 		noneActivated = false;
 		allActivated  = false;
@@ -195,8 +268,7 @@ int think()
 	//The P multiplicand
 	error = desired - actual;
 
-	
-	totalError[numLaps] += abs(error);
+	currentRunStat.totalError += abs(error);
 	
 	//The D multiplicand
 	dError = (2 * error - oldError) / (long)((OrangutanTime::ms() - lastFrameTime));
@@ -221,7 +293,7 @@ int think()
 	//sendMessage(message);
 
 	//Turn rate
-	return P * error + I * sumError + D * dError;
+	return currentRunStat.P * error + currentRunStat.I * sumError + currentRunStat.D * dError;
 }
 
 //Perform some action.
@@ -281,10 +353,17 @@ void act(int turnRate)
 		sendMessage(message);
 	}
 
-	if (noneActivated || !programRunning)
+	if (!programRunning)
 	{
 		OrangutanMotors::setSpeeds(0,0);
-		sendMessage("Off Track\r\n");
+	}
+	else if (noneActivated) 
+	{
+		//We went off track.. slowly back up.
+		//OrangutanMotors::setSpeeds(-50,-50);
+		OrangutanMotors::setSpeeds(0,0);
+		//Add extra error to help ensure it loses.
+		currentRunStat.totalError += 100;
 	}
 	else
 	{
@@ -302,6 +381,7 @@ void sendConstMessage(const char* message)
 	OrangutanSerial::sendBlocking(data, strlen(data));
 	free(data);
 }
+
 void sendMessage(char* message)
 {
 	unsigned long
@@ -335,3 +415,30 @@ void sendMessage(char* message)
 	}
 
 }
+
+void seedRand(int seed)
+{
+	randNum = seed % MAX_PRIME;
+}
+
+int randInt()
+{
+	randNum = randNum * MID_PRIME % MAX_PRIME;
+	return randNum;
+}
+
+int randIntRange(int minVal, int maxVal)
+{
+	return (maxVal - minVal) * randInt() + minVal;
+}
+
+float randFloat()
+{
+	return (float)randInt()/(float)MAX_PRIME;
+}
+
+float randFloatRange(float minVal, float maxVal)
+{
+	return randFloat() * (maxVal - minVal) + minVal; 
+}
+
