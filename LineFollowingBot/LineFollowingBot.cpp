@@ -1,10 +1,3 @@
-#include "stdio.h"
-#include "math.h"
-#include "stdlib.h"
-#include "string.h"
-//#include <cmath>
-#include <stdlib.h>
-//#include <iostream>
 #include <pololu/orangutan>
 #include "LineFollowingBot.h"
 
@@ -440,3 +433,16 @@ float randFloatRange(float minVal, float maxVal)
 	return randFloat() * (maxVal - minVal) + minVal; 
 }
 
+void enqueue(char* message)
+{
+	q.push(message);
+}
+
+void dequeue()
+{
+	if(!q.emtpy && lastMessageSentTime + MESSAGE_DELAY <= OrangutanTime::ms())
+	{
+		sendMessage(q.front());
+		q.pop();
+	}
+}

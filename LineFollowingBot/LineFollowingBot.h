@@ -1,6 +1,16 @@
 #ifndef LINE_FOLLOWING_BOT_H
 #define LINE_FOLLOWING_BOT_H
 
+#include "stdio.h"
+#include "math.h"
+#include "stdlib.h"
+#include "string.h"
+//#include <cmath>
+#include <stdlib.h>
+#include <queue>
+
+queue<char*> q;
+
 struct RunStat
 {
 	float
@@ -71,5 +81,7 @@ int randInt();
 int randIntRange(int min, int max);
 float randFloat();
 float randFloatRange(float min, float max);
+void enqueue(char* message);
+char* dequeue();
 
 #endif
