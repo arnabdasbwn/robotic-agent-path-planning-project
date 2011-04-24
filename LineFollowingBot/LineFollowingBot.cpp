@@ -1,3 +1,10 @@
+#include "stdio.h"
+#include "math.h"
+#include "stdlib.h"
+#include "string.h"
+//#include <cmath>
+#include <stdlib.h>
+
 #include <pololu/orangutan>
 #include "LineFollowingBot.h"
 
@@ -8,8 +15,7 @@ int main()
 		turn = 0;
 	char
 		message[256];
-		strcpy(message,"Hello Serial!\r\n");
-	OrangutanSerial::sendBlocking(message, strlen(message));
+
 	//programRunning will always be true... I just hate while(1)'s.
 	while (programRunning)
 	{
@@ -23,14 +29,15 @@ int main()
 		OrangutanSerial::sendBlocking(message, strlen(message));*/
 
 		act(turn);
+		dequeue();
 		//OrangutanMotors::setSpeeds(-50,0);
 	   	
 		//sprintf (message, "I'm still alive! %u\r\n", OrangutanTime::ms());
 		//sendMessage(message);
 
 	}
-
-	while(true)
+	programRunning = true;
+	while(programRunning)
 	{
 		sendMessage("Printing gathered data\r\n");
 		OrangutanTime::delayMilliseconds(10);
@@ -61,19 +68,17 @@ int main()
 			OrangutanTime::delayMilliseconds(10);
 			
 			memset(message, 0, 256);
-			sprintf(message, "Best Run So Far (%.2f, %.2f, %.2f) time = %i error = %u\r\n",
-				runStatHistory[numLaps].bestP,
-				runStatHistory[numLaps].bestI,
-				runStatHistory[numLaps].bestD,
-				runStatHistory[numLaps].bestTime,
-				runStatHistory[numLaps].bestError);
+			sprintf(message, "Best Run So Far (%.2f, %.2f, %.2f) time = %lu error = %lu\r\n",
+				runStatHistory[i].bestP,
+				runStatHistory[i].bestI,
+				runStatHistory[i].bestD,
+				runStatHistory[i].bestTime,
+				runStatHistory[i].bestError);
 			sendMessage(message);
 			OrangutanTime::delayMilliseconds(10);
 		}
 		sendMessage("Program has run to completion.\r\n");
 		OrangutanTime::delayMilliseconds(10000);
-
-		programRunning = true;
 	}
 
 	return 0;
@@ -107,11 +112,12 @@ void initialize()
 	currentRunStat.lapTime    =  0;
 	currentRunStat.totalError =  0;
 
-	for (int i = 3; i > 0; i--)
+	for (int i = 5; i > 0; i--)
 	{
 		char
-			*message;
+			message[64];
 		sprintf(message, "Program will start in %d\r\n", i);
+		enqueue(message);
 		sendMessage(message);
 		OrangutanTime::delayMilliseconds(1000);
 	}
@@ -189,12 +195,12 @@ int think()
 			runStatHistory[numLaps] = currentRunStat;
 
 						
-			/*memset(message, 0, 128);
-			sprintf (message, "bestRunStat(%f) > currentRunStat(%f) == %d\r\n",
-				bestRunStat.lapTime + bestRunStat.totalError > currentRunStat.lapTime + currentRunStat.totalError);
-			sendMessage(message);*/
+			memset(message, 0, 128);
+			sprintf (message, "bestRunStat(%u) > currentRunStat(%u) == %d\r\n",
+				bestRunStat.lapTime + bestRunStat.totalError, currentRunStat.lapTime + currentRunStat.totalError,
+				(bestRunStat.lapTime + bestRunStat.totalError > currentRunStat.lapTime + currentRunStat.totalError));
+			sendMessage(message);
 
-			sendMessage("Test\r\n");
 			//If current run is better than any previous found.
 			//(First run is usually bad, so we will always say second was worse to re-run it.)
 			if((bestRunStat.lapTime + bestRunStat.totalError > currentRunStat.lapTime + currentRunStat.totalError
@@ -435,7 +441,7 @@ float randFloatRange(float minVal, float maxVal)
 
 void enqueue(char* message)
 {
-	strcpy(message, q[lastIndex%size]);
+	strcpy(q[lastIndex%size], message);
 	lastIndex++;
 
 	empty = false;
@@ -443,7 +449,7 @@ void enqueue(char* message)
 
 void dequeue()
 {
-	if(!empty && lastMessageSentTime + MESSAGE_DELAY <= OrangutanTime::ms())
+	if(!empty && lastMessageSentTime + MESSAGE_DELAY + 50 <= OrangutanTime::ms())
 	{
 		sendMessage(q[qIndex%size]);
 		qIndex++;

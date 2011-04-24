@@ -8,8 +8,8 @@
 //#include <cmath>
 #include <stdlib.h>
 
-unsigned const int size = 10;
-char q[128][size];
+unsigned const int size = 5;
+char q[64][size];
 unsigned int qIndex = 0,
 			 lastIndex = 0;
 
