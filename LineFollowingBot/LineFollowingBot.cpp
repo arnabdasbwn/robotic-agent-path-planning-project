@@ -435,14 +435,19 @@ float randFloatRange(float minVal, float maxVal)
 
 void enqueue(char* message)
 {
-	q.push(message);
+	strcpy(message, q[lastIndex%size]);
+	lastIndex++;
+
+	empty = false;
 }
 
 void dequeue()
 {
-	if(!q.emtpy && lastMessageSentTime + MESSAGE_DELAY <= OrangutanTime::ms())
+	if(!empty && lastMessageSentTime + MESSAGE_DELAY <= OrangutanTime::ms())
 	{
-		sendMessage(q.front());
-		q.pop();
+		sendMessage(q[qIndex%size]);
+		qIndex++;
+		if(qIndex == lastIndex)
+			empty = true;
 	}
 }

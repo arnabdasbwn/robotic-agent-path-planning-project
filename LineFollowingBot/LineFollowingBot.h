@@ -7,9 +7,13 @@
 #include "string.h"
 //#include <cmath>
 #include <stdlib.h>
-#include <queue>
 
-queue<char*> q;
+unsigned const int size = 10;
+char q[128][size];
+unsigned int qIndex = 0,
+			 lastIndex = 0;
+
+
 
 struct RunStat
 {
@@ -32,7 +36,8 @@ bool
 	allActivated = false,
 	noneActivated = false,
 	firstRun = true,
-	lapStarted = false;
+	lapStarted = false,
+	empty = true;
 
 int
 	numLaps           = 0,
@@ -82,6 +87,6 @@ int randIntRange(int min, int max);
 float randFloat();
 float randFloatRange(float min, float max);
 void enqueue(char* message);
-char* dequeue();
+void dequeue();
 
 #endif
