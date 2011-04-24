@@ -118,9 +118,9 @@ void initialize()
 	{
 		char
 			*message;
-		sprintf(message, "Program will start in %d\r\n", i)
-		printSerial(message);
-		OrangutanTime::delayMilliseconds();
+		sprintf(message, "Program will start in %d\r\n", i);
+		sendMessage(message);
+		OrangutanTime::delayMilliseconds(1000);
 	}
 }
 
@@ -196,11 +196,12 @@ int think()
 			runStatHistory[numLaps] = currentRunStat;
 
 						
-			memset(message, 0, 128);
+			/*memset(message, 0, 128);
 			sprintf (message, "bestRunStat(%f) > currentRunStat(%f) == %d\r\n",
 				bestRunStat.lapTime + bestRunStat.totalError > currentRunStat.lapTime + currentRunStat.totalError);
-			sendMessage(message);
+			sendMessage(message);*/
 
+			sendMessage("Test\r\n");
 			//If current run is better than any previous found.
 			//(First run is usually bad, so we will always say second was worse to re-run it.)
 			if((bestRunStat.lapTime + bestRunStat.totalError > currentRunStat.lapTime + currentRunStat.totalError
@@ -274,9 +275,6 @@ int think()
 	dError = (2 * error - oldError) / (long)((OrangutanTime::ms() - lastFrameTime));
 	
 
-	//sendMessage(message);
-
-	OrangutanTime::delayMicroseconds(100);
 	//The I multiplicand
 	sumError += error * (OrangutanTime::ms() - lastFrameTime);
 
