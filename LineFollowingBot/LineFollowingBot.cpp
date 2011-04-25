@@ -28,37 +28,33 @@ int main()
 	{
 		sendMessage("Printing gathered data\r\n");
 		OrangutanTime::delayMilliseconds(100);
-		memset(message, 0, 256);
-		sprintf(message, "Will run for %d laps = %d\r\n", LAPS_PER_RUN);
+		sprintf(message, "Will run for %d laps = %d\r\n", NUM_LAPS);
 		sendMessage(message);
 		OrangutanTime::delayMilliseconds(100);
-		memset(message, 0, 256);
-		sprintf(message, "Using anneal values (%f, %f, %f)\r\n", annealStepP, annealStepI, annealStepD);
-		sendMessage(message);
-		OrangutanTime::delayMilliseconds(100);
-		for (unsigned char i = 0; i < LAPS_PER_RUN; i++)
+		#ifdef KEEP_STAT_HISTORY
+		for (unsigned char i = 0; i < NUM_LAPS; i++)
 		{
 			sendMessage("\r\n------------------------------\r\n");
 			OrangutanTime::delayMilliseconds(100);
-			memset(message, 0, 256);
+			//memset(message, 0, 256);
 			sprintf(message, "Run %d stats:\r\n", i + 1);
 			sendMessage(message);
 			OrangutanTime::delayMilliseconds(100);
-			memset(message, 0, 256);
+			//memset(message, 0, 256);
 			sprintf(message, "P = %f, I = %f, D = %f\r\n",
 				runStatHistory[i].P, runStatHistory[i].I, runStatHistory[i].D);
 			sendMessage(message);
 			OrangutanTime::delayMilliseconds(100);
-			memset(message, 0, 256);
+			//memset(message, 0, 256);
 			sprintf(message, "Time for Lap %d is %u\r\n", i + 1, runStatHistory[i].lapTime);
 			sendMessage(message);
 			OrangutanTime::delayMilliseconds(100);
-			memset(message, 0, 256);
+			//memset(message, 0, 256);
 			sprintf(message, "Error for lap %d is %u\r\n", i + 1, runStatHistory[i].totalError);
 			sendMessage(message);
 			OrangutanTime::delayMilliseconds(100);
 			
-			memset(message, 0, 256);
+			//memset(message, 0, 256);
 			sprintf(message, "Best Run So Far (%.2f, %.2f, %.2f) time = %lu error = %lu\r\n",
 				runStatHistory[i].bestP,
 				runStatHistory[i].bestI,
@@ -68,7 +64,20 @@ int main()
 			sendMessage(message);
 			OrangutanTime::delayMilliseconds(100);
 		}
-		sendMessage("Program has run to completion.\r\n");
+		#else
+		OrangutanTime::delayMilliseconds(100);
+		//memset(message, 0, 256);
+		sprintf(message, "Learned PID = (%f, %f, %f)\r\n", runStat.bestP, runStat.bestI, runStat.bestD);
+		sendMessage(message);
+		//OrangutanSerial::sendBlocking(message, strlen(message));
+		OrangutanTime::delayMilliseconds(100);
+		//memset(message, 0, 256);
+		sprintf(message, "With error = %lu and time = %lu\r\n", runStat.bestError, runStat.bestTime);
+		sendMessage(message);
+		//OrangutanSerial::sendBlocking(message, strlen(message));
+		OrangutanTime::delayMilliseconds(100);
+		#endif
+		sendMessage("Program has run to completion.\r\n\r\n\r\n");
 		OrangutanTime::delayMilliseconds(10000);
 	}
 
@@ -78,6 +87,9 @@ int main()
 //Initialize board.
 void initialize()
 {
+	char
+		message[64];
+
 	OrangutanAnalog::setMode(MODE_10_BIT);//MODE_8_BIT
 	OrangutanSerial::setBaudRate(9600);
 	OrangutanTime::reset();
@@ -98,16 +110,42 @@ void initialize()
 	runStat.lapTime    = 	0;
 	runStat.totalError = 	0;
 
-	runStat.bestP      = 50.0;
+	runStat.bestP      = 60.0;
 	runStat.bestI      =  0.1;
 	runStat.bestD      = 10.0;
 	runStat.bestTime   = 9999;
 	runStat.bestError  = 9999;
-
+	
+	OrangutanTime::delayMilliseconds(100);
+	sprintf(message, "\r\n\r\nProgram last built on %s at %s\r\n", __DATE__, __TIME__);
+	sendMessage(message);
+	OrangutanTime::delayMilliseconds(100);
+	sendMessage("-----------------------------------------------\r\n");
+	OrangutanTime::delayMilliseconds(100);
+	#ifdef KEEP_STAT_HISTORY
+	sendMessage("Program will keep history statistics\r\n");
+	#else
+	sendMessage("Program will NOT keep history statistics\r\n");
+	#endif
+	
+	OrangutanTime::delayMilliseconds(100);
+	sprintf(message, "Program will run for %d laps\r\n", NUM_LAPS);
+	OrangutanSerial::sendBlocking(message, strlen(message));
+	//sendMessage(message);
+	
+	OrangutanTime::delayMilliseconds(100);
+	sprintf(message, "Using PID values (%f, %f, %f)\r\n", runStat.P, runStat.I, runStat.D);
+	OrangutanSerial::sendBlocking(message, strlen(message));
+	//sendMessage(message);
+	
+	/* Why won't this print!?!?!?
+	OrangutanTime::delayMilliseconds(100);
+	sprintf(message, "Using anneal values (%f, %f, %f)\r\n", annealStepP, annealStepI, annealStepD);
+	OrangutanSerial::sendBlocking(message, strlen(message));*/
+	//sendMessage(message);
+	OrangutanTime::delayMilliseconds(100);
 	for (int i = 5; i > 0; i--)
 	{
-		char
-			message[64];
 		sprintf(message, "Program will start in %d\r\n", i);
 		sendMessage(message);
 		OrangutanTime::delayMilliseconds(1000);
@@ -187,12 +225,14 @@ int think()
 				(bestRunStat.lapTime + bestRunStat.totalError > currentRunStat.lapTime + currentRunStat.totalError));
 			sendMessage(message);*/
 
+			#ifdef KEEP_STAT_HISTORY
 			//Update current run in history regardless of whether it's a winner.
 			runStatHistory[numLaps].P = runStat.P;
 			runStatHistory[numLaps].I = runStat.I;
 			runStatHistory[numLaps].D = runStat.D;
 			runStatHistory[numLaps].lapTime    = runStat.lapTime;
 			runStatHistory[numLaps].totalError = runStat.totalError;
+			#endif
 
 			//If current run is better than any previous found.
 			//(First run is usually bad, so we will always say second was worse to re-run it.)
@@ -207,12 +247,15 @@ int think()
 				runStat.bestD          = runStat.D;
 				runStat.bestTime       = runStat.lapTime;
 				runStat.bestError      = runStat.totalError;
+				#ifdef KEEP_STAT_HISTORY
 				runStatHistory[numLaps].bestP     = runStat.P;
 				runStatHistory[numLaps].bestI     = runStat.I;
 				runStatHistory[numLaps].bestD     = runStat.D;
 				runStatHistory[numLaps].bestTime  = runStat.lapTime;
 				runStatHistory[numLaps].bestError = runStat.totalError;
+				#endif
 			}
+			#ifdef KEEP_STAT_HISTORY
 			else
 			{
 				runStatHistory[numLaps].bestP = runStat.bestP;
@@ -221,7 +264,7 @@ int think()
 				runStatHistory[numLaps].bestTime = runStat.bestTime;
 				runStatHistory[numLaps].bestError = runStat.bestError;
 			}
-
+			#endif
 			numLaps++;
 
 			//Calculate new P, I, D values
@@ -251,7 +294,7 @@ int think()
 				currentRunStat.P, currentRunStat.I, currentRunStat.D);
 			sendMessage(message);*/
 
-			if (numLaps == LAPS_PER_RUN)
+			if (numLaps == NUM_LAPS)
 			{
 				programRunning = false;
 			}

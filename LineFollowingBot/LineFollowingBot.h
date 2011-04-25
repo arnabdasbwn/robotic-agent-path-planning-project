@@ -8,6 +8,7 @@
 //#include <cmath>
 #include <stdlib.h>
 
+#define KEEP_STAT_HISTORY
 
 struct RunStat
 {
@@ -33,19 +34,19 @@ bool
 	lapStarted = false,
 	empty = true;
 
-int
-	numLaps           = 0,
-	annealNumerator   = 20,
-	annealDenominator = 20,
-	randNum           = 0;
-
 static const int
 	MAX_SPEED        =  255,
 	NUM_LINE_SENSORS =    8,
-	LAPS_PER_RUN     =   20,
-	MAX_RUNS         =    1,
+	NUM_LAPS         =   20,
 	MAX_PRIME        = 1303,
 	MID_PRIME        = 1301;
+
+int
+	numLaps           = 0,
+	annealNumerator   = NUM_LAPS,
+	annealDenominator = NUM_LAPS,
+	randNum           = 0;
+
 
 static const unsigned long
 	MESSAGE_DELAY = 10;	//Delay in ms between times we send serial data.
@@ -56,8 +57,10 @@ static unsigned long
 	lapStartTime = 0;
 
 struct RunStat
-	runStat,
-	runStatHistory[LAPS_PER_RUN];
+#ifdef KEEP_STAT_HISTORY
+	runStatHistory[NUM_LAPS],
+#endif
+	runStat;
 
 float
 	annealStepP = 20.00,
