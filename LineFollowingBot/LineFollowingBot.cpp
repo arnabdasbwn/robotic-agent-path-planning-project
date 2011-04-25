@@ -21,50 +21,42 @@ int main()
 	{
 		sense();
 		turn = think();
-
-		/*char
-			message[256];
-	    memset(message, 0, 256);
-		sprintf (message, "turn = %d\r\n", turn);
-		OrangutanSerial::sendBlocking(message, strlen(message));*/
-
 		act(turn);
-		//OrangutanMotors::setSpeeds(-50,0);
-	   	
-		//sprintf (message, "I'm still alive! %u\r\n", OrangutanTime::ms());
-		//sendMessage(message);
-
 	}
 	programRunning = true;
 	while(programRunning)
 	{
 		sendMessage("Printing gathered data\r\n");
-		OrangutanTime::delayMilliseconds(10);
+		OrangutanTime::delayMilliseconds(100);
 		memset(message, 0, 256);
-		sprintf(message, "Num Laps = %d\r\n", numLaps);
+		sprintf(message, "Will run for %d laps = %d\r\n", LAPS_PER_RUN);
 		sendMessage(message);
-		OrangutanTime::delayMilliseconds(10);
+		OrangutanTime::delayMilliseconds(100);
+		memset(message, 0, 256);
+		sprintf(message, "Using anneal values (%f, %f, %f)\r\n", annealStepP, annealStepI, annealStepD);
+		sendMessage(message);
+		OrangutanTime::delayMilliseconds(100);
 		for (unsigned char i = 0; i < LAPS_PER_RUN; i++)
 		{
-			sendMessage("------------------------------\r\n");
-			OrangutanTime::delayMilliseconds(10);
+			sendMessage("\r\n------------------------------\r\n");
+			OrangutanTime::delayMilliseconds(100);
 			memset(message, 0, 256);
-			sprintf(message, "Run %d stats:\r\n", i);
+			sprintf(message, "Run %d stats:\r\n", i + 1);
 			sendMessage(message);
-			OrangutanTime::delayMilliseconds(10);
+			OrangutanTime::delayMilliseconds(100);
 			memset(message, 0, 256);
 			sprintf(message, "P = %f, I = %f, D = %f\r\n",
 				runStatHistory[i].P, runStatHistory[i].I, runStatHistory[i].D);
 			sendMessage(message);
-			OrangutanTime::delayMilliseconds(10);
+			OrangutanTime::delayMilliseconds(100);
 			memset(message, 0, 256);
-			sprintf(message, "Time for Lap %d is %u\r\n", i, runStatHistory[i].lapTime);
+			sprintf(message, "Time for Lap %d is %u\r\n", i + 1, runStatHistory[i].lapTime);
 			sendMessage(message);
-			OrangutanTime::delayMilliseconds(10);
+			OrangutanTime::delayMilliseconds(100);
 			memset(message, 0, 256);
-			sprintf(message, "Error for lap %d is %u\r\n", i, runStatHistory[i].totalError);
+			sprintf(message, "Error for lap %d is %u\r\n", i + 1, runStatHistory[i].totalError);
 			sendMessage(message);
-			OrangutanTime::delayMilliseconds(10);
+			OrangutanTime::delayMilliseconds(100);
 			
 			memset(message, 0, 256);
 			sprintf(message, "Best Run So Far (%.2f, %.2f, %.2f) time = %lu error = %lu\r\n",
@@ -74,7 +66,7 @@ int main()
 				runStatHistory[i].bestTime,
 				runStatHistory[i].bestError);
 			sendMessage(message);
-			OrangutanTime::delayMilliseconds(10);
+			OrangutanTime::delayMilliseconds(100);
 		}
 		sendMessage("Program has run to completion.\r\n");
 		OrangutanTime::delayMilliseconds(10000);
@@ -106,7 +98,7 @@ void initialize()
 	bestRunStat.lapTime    = 9999;
 	bestRunStat.totalError = 9999;
 
-	currentRunStat.P          = 60.0;
+	currentRunStat.P          = 50.0;
 	currentRunStat.I          =  0.1;
 	currentRunStat.D          = 10.0;
 	currentRunStat.lapTime    =  0;
@@ -128,7 +120,6 @@ void sense()
 	float
 		filterStrength = 0.1f; //Larger number means less responsive to change.
 
-	//The mux controls what value is read by analogInput
 	for (unsigned char i = 0; i < 8; i++)
 	{
 		lineSensor[i] = (1-filterStrength) * OrangutanAnalog::read(i) 
@@ -189,19 +180,19 @@ int think()
 		{
 			//Record lap time
 			currentRunStat.lapTime = OrangutanTime::ms() - lapStartTime;
-			
-			runStatHistory[numLaps].P = currentRunStat.P;
-			runStatHistory[numLaps].I = currentRunStat.I;
-			runStatHistory[numLaps].D = currentRunStat.D;
-			runStatHistory[numLaps].lapTime = currentRunStat.lapTime;
-			runStatHistory[numLaps].totalError = currentRunStat.totalError;
-
 						
 			/*memset(message, 0, 128);
 			sprintf (message, "bestRunStat(%u) > currentRunStat(%u) == %d\r\n",
 				bestRunStat.lapTime + bestRunStat.totalError, currentRunStat.lapTime + currentRunStat.totalError,
 				(bestRunStat.lapTime + bestRunStat.totalError > currentRunStat.lapTime + currentRunStat.totalError));
 			sendMessage(message);*/
+
+			//Update current run in history regardless of whether it's a winner.
+			runStatHistory[numLaps].P = currentRunStat.P;
+			runStatHistory[numLaps].I = currentRunStat.I;
+			runStatHistory[numLaps].D = currentRunStat.D;
+			runStatHistory[numLaps].lapTime = currentRunStat.lapTime;
+			runStatHistory[numLaps].totalError = currentRunStat.totalError;
 
 			//If current run is better than any previous found.
 			//(First run is usually bad, so we will always say second was worse to re-run it.)
@@ -216,6 +207,11 @@ int think()
 				bestRunStat.D          = currentRunStat.D;
 				bestRunStat.lapTime    = currentRunStat.lapTime;
 				bestRunStat.totalError = currentRunStat.totalError;
+				//bestRunStat.bestP      = currentRunStat.P;
+				//bestRunStat.bestI      = currentRunStat.I;
+				//bestRunStat.bestD      = currentRunStat.D;
+				//bestRunStat.bestTime   = currentRunStat.lapTime;
+				//bestRunStat.bestError  = currentRunStat.totalError;
 				runStatHistory[numLaps].bestP = currentRunStat.P;
 				runStatHistory[numLaps].bestI = currentRunStat.I;
 				runStatHistory[numLaps].bestD = currentRunStat.D;
@@ -224,28 +220,12 @@ int think()
 			}
 			else
 			{
-				runStatHistory[numLaps].P = currentRunStat.P;
-				runStatHistory[numLaps].I = currentRunStat.I;
-				runStatHistory[numLaps].D = currentRunStat.D;
-				runStatHistory[numLaps].lapTime = currentRunStat.lapTime;
-				runStatHistory[numLaps].totalError = currentRunStat.totalError;
 				runStatHistory[numLaps].bestP = bestRunStat.P;
 				runStatHistory[numLaps].bestI = bestRunStat.I;
 				runStatHistory[numLaps].bestD = bestRunStat.D;
-				runStatHistory[numLaps].bestTime = bestRunStat.bestTime;
-				runStatHistory[numLaps].bestError = bestRunStat.bestError;
+				runStatHistory[numLaps].bestTime = bestRunStat.lapTime;
+				runStatHistory[numLaps].bestError = bestRunStat.totalError;
 			}
-
-			sendMessage("Got here\r\n");
-			/*memset(message, 0, 128);
-			sprintf(message, "(%.1f %.1f %.1f)\r\n",
-					currentRunStat.P, currentRunStat.I, currentRunStat.D);
-			sendMessage(message);*/
-			/*memset(message, 0, 128);
-			sprintf(message, "(%.1f %.1f %.1f) Best (%.1f %.1f %.1f)\r\n",
-					currentRunStat.P, currentRunStat.I, currentRunStat.D,
-					bestRunStat.P, bestRunStat.I, bestRunStat.D);
-			sendMessage(message);*/
 
 			numLaps++;
 
@@ -437,7 +417,7 @@ void sendMessage(char* message)
 	}
 	else
 	{
-		OrangutanSerial::sendBlocking(message, strlen(message));
+		OrangutanSerial::send(message, strlen(message));
 		//OrangutanTime::delayMilliseconds(100);
 		lastMessageSentTime = currentTime;
 		/************************************************/

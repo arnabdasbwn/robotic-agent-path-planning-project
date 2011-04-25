@@ -61,7 +61,7 @@ struct RunStat
 	runStatHistory[LAPS_PER_RUN];
 
 float
-	annealStepP = 15.00,
+	annealStepP = 20.00,
 	annealStepI =  0.05,
 	annealStepD =  5.00;
 /*double
