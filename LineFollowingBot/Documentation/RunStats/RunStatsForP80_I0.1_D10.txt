@@ -1,0 +1,110 @@
+Program will start in 4
+Program will start in 4
+Program will start in 3
+Program will start in 2
+Program will start in 1
+New Best Found!
+New Best Found!
+New Best Found!
+Printing gathered data
+Run 1 stats:
+P = 80.000000, I = 0.100000, D = 10.000000
+Time for Lap 1 is 7466
+Error for lap 1 is 6953
+Best Run So Far (80.00, 0.10, 10.00) time = 9999 error = 9999
+Run 2 stats:
+P = 93.756714, I = 0.117460, D = 11.147352
+Time for Lap 2 is 8124
+Error for lap 2 is 4210
+Best Run So Far (93.76, 0.12, 11.15) time = 8124 error = 4210
+Run 3 stats:
+P = 89.393127, I = 0.161898, D = 12.652916
+Time for Lap 3 is 8116
+Error for lap 3 is 4377
+Best Run So Far (93.76, 0.12, 11.15) time = 8124 error = 4210
+Run 4 stats:
+P = 97.724861, I = 0.101815, D = 15.447046
+Time for Lap 4 is 8230
+Error for lap 4 is 4220
+Best Run So Far (93.76, 0.12, 11.15) time = 8124 error = 4210
+Run 5 stats:
+P = 97.289139, I = 0.074634, D = 12.735802
+Time for Lap 5 is 8343
+Error for lap 5 is 4308
+Best Run So Far (93.76, 0.12, 11.15) time = 8124 error = 4210
+Run 6 stats:
+P = 95.792015, I = 0.108404, D = 9.259401
+Time for Lap 6 is 8591
+Error for lap 6 is 4609
+Best Run So Far (93.76, 0.12, 11.15) time = 8124 error = 4210
+Run 7 stats:
+P = 103.728900, I = 0.080248, D = 14.839792
+Time for Lap 7 is 8741
+Error for lap 7 is 4343
+Best Run So Far (93.76, 0.12, 11.15) time = 8124 error = 4210
+Run 8 stats:
+P = 98.084038, I = 0.100349, D = 11.859171
+Time for Lap 8 is 8784
+Error for lap 8 is 4689
+Best Run So Far (93.76, 0.12, 11.15) time = 8124 error = 4210
+Run 9 stats:
+P = 83.931885, I = 0.129607, D = 6.236186
+Time for Lap 9 is 8118
+Error for lap 9 is 4507
+Best Run So Far (93.76, 0.12, 11.15) time = 8124 error = 4210
+Run 10 stats:
+P = 95.283188, I = 0.110668, D = 9.731389
+Time for Lap 10 is 8457
+Error for lap 10 is 4416
+Best Run So Far (93.76, 0.12, 11.15) time = 8124 error = 4210
+Run 11 stats:
+P = 101.069650, I = 0.090171, D = 13.855142
+Time for Lap 11 is 9156
+Error for lap 11 is 4783
+Best Run So Far (93.76, 0.12, 11.15) time = 8124 error = 4210
+Run 12 stats:
+P = 96.847656, I = 0.105238, D = 6.713354
+Time for Lap 12 is 8940
+Error for lap 12 is 4844
+Best Run So Far (93.76, 0.12, 11.15) time = 8124 error = 4210
+Run 13 stats:
+P = 83.442627, I = 0.122036, D = 8.880085
+Time for Lap 13 is 7965
+Error for lap 13 is 4363
+Best Run So Far (83.44, 0.12, 8.88) time = 7965 error = 4363
+Run 14 stats:
+P = 85.685143, I = 0.073793, D = 5.857828
+Time for Lap 14 is 8153
+Error for lap 14 is 4494
+Best Run So Far (83.44, 0.12, 8.88) time = 7965 error = 4363
+Run 15 stats:
+P = 84.333069, I = 0.118074, D = 8.054107
+Time for Lap 15 is 8157
+Error for lap 15 is 4456
+Best Run So Far (83.44, 0.12, 8.88) time = 7965 error = 4363
+Run 16 stats:
+P = 73.527435, I = 0.135332, D = 7.391597
+Time for Lap 16 is 7763
+Error for lap 16 is 4567
+Best Run So Far (83.44, 0.12, 8.88) time = 7965 error = 4363
+Run 17 stats:
+P = 87.135071, I = 0.092364, D = 9.395243
+Time for Lap 17 is 8224
+Error for lap 17 is 4523
+Best Run So Far (83.44, 0.12, 8.88) time = 7965 error = 4363
+Run 18 stats:
+P = 81.976013, I = 0.100340, D = 7.106485
+Time for Lap 18 is 8002
+Error for lap 18 is 4554
+Best Run So Far (83.44, 0.12, 8.88) time = 7965 error = 4363
+Run 19 stats:
+P = 80.004601, I = 0.123561, D = 6.715273
+Time for Lap 19 is 7807
+Error for lap 19 is 4260
+Best Run So Far (80.00, 0.12, 6.72) time = 7807 error = 4260
+Run 20 stats:
+P = 78.493088, I = 0.108638, D = 6.902149
+Time for Lap 20 is 7836
+Error for lap 20 is 4532
+Best Run So Far (80.00, 0.12, 6.72) time = 7807 error = 4260
+Program has run to completion.
