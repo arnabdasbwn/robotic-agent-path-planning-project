@@ -1,0 +1,20 @@
+Program last built on Apr 25 2011 at 14:24:12
+-----------------------------------------------
+Program will NOT keep history statistics
+Program will run for 100 laps
+Program will start in 5
+Program will start in 4
+Program will start in 3
+Program will start in 2
+Program will start in 1
+New Best Found!
+New Best Found!
+New Best Found!
+New Best Found!
+New Best Found!
+New Best Found!
+New Best Found!
+Printing gathered data
+Learned PID = (75.035919, 0.055204, 7.511551)
+With error = 4132 and time = 7392
+Program has run to completion.
