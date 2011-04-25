@@ -92,17 +92,17 @@ void initialize()
 	seedRand(randNum);
 
 	//Initialize first run statistics
-	bestRunStat.P          = 60.0;
-	bestRunStat.I          =  0.1;
-	bestRunStat.D          = 10.0;
-	bestRunStat.lapTime    = 9999;
-	bestRunStat.totalError = 9999;
+	runStat.P          = 60.0;
+	runStat.I          =  0.1;
+	runStat.D          = 10.0;
+	runStat.lapTime    = 	0;
+	runStat.totalError = 	0;
 
-	currentRunStat.P          = 50.0;
-	currentRunStat.I          =  0.1;
-	currentRunStat.D          = 10.0;
-	currentRunStat.lapTime    =  0;
-	currentRunStat.totalError =  0;
+	runStat.bestP      = 50.0;
+	runStat.bestI      =  0.1;
+	runStat.bestD      = 10.0;
+	runStat.bestTime   = 9999;
+	runStat.bestError  = 9999;
 
 	for (int i = 5; i > 0; i--)
 	{
@@ -179,7 +179,7 @@ int think()
 		if (lapStarted)
 		{
 			//Record lap time
-			currentRunStat.lapTime = OrangutanTime::ms() - lapStartTime;
+			runStat.lapTime = OrangutanTime::ms() - lapStartTime;
 						
 			/*memset(message, 0, 128);
 			sprintf (message, "bestRunStat(%u) > currentRunStat(%u) == %d\r\n",
@@ -188,65 +188,60 @@ int think()
 			sendMessage(message);*/
 
 			//Update current run in history regardless of whether it's a winner.
-			runStatHistory[numLaps].P = currentRunStat.P;
-			runStatHistory[numLaps].I = currentRunStat.I;
-			runStatHistory[numLaps].D = currentRunStat.D;
-			runStatHistory[numLaps].lapTime = currentRunStat.lapTime;
-			runStatHistory[numLaps].totalError = currentRunStat.totalError;
+			runStatHistory[numLaps].P = runStat.P;
+			runStatHistory[numLaps].I = runStat.I;
+			runStatHistory[numLaps].D = runStat.D;
+			runStatHistory[numLaps].lapTime    = runStat.lapTime;
+			runStatHistory[numLaps].totalError = runStat.totalError;
 
 			//If current run is better than any previous found.
 			//(First run is usually bad, so we will always say second was worse to re-run it.)
-			if((bestRunStat.lapTime + bestRunStat.totalError > currentRunStat.lapTime + currentRunStat.totalError
-				&& numLaps != 0 && currentRunStat.lapTime > 7000)
-				|| bestRunStat.P == 0)
+			if((runStat.bestTime + runStat.bestError > runStat.lapTime + runStat.totalError
+				&& numLaps != 0 && runStat.lapTime > 7000)
+				|| runStat.bestP == 0)
 			{
 				//memset(message, 0, 128);
 				sendMessage("New Best Found!\r\n");
-				bestRunStat.P          = currentRunStat.P;
-				bestRunStat.I          = currentRunStat.I;
-				bestRunStat.D          = currentRunStat.D;
-				bestRunStat.lapTime    = currentRunStat.lapTime;
-				bestRunStat.totalError = currentRunStat.totalError;
-				//bestRunStat.bestP      = currentRunStat.P;
-				//bestRunStat.bestI      = currentRunStat.I;
-				//bestRunStat.bestD      = currentRunStat.D;
-				//bestRunStat.bestTime   = currentRunStat.lapTime;
-				//bestRunStat.bestError  = currentRunStat.totalError;
-				runStatHistory[numLaps].bestP = currentRunStat.P;
-				runStatHistory[numLaps].bestI = currentRunStat.I;
-				runStatHistory[numLaps].bestD = currentRunStat.D;
-				runStatHistory[numLaps].bestTime = currentRunStat.lapTime;
-				runStatHistory[numLaps].bestError = currentRunStat.totalError;
+				runStat.bestP          = runStat.P;
+				runStat.bestI          = runStat.I;
+				runStat.bestD          = runStat.D;
+				runStat.bestTime       = runStat.lapTime;
+				runStat.bestError      = runStat.totalError;
+				runStatHistory[numLaps].bestP     = runStat.P;
+				runStatHistory[numLaps].bestI     = runStat.I;
+				runStatHistory[numLaps].bestD     = runStat.D;
+				runStatHistory[numLaps].bestTime  = runStat.lapTime;
+				runStatHistory[numLaps].bestError = runStat.totalError;
 			}
 			else
 			{
-				runStatHistory[numLaps].bestP = bestRunStat.P;
-				runStatHistory[numLaps].bestI = bestRunStat.I;
-				runStatHistory[numLaps].bestD = bestRunStat.D;
-				runStatHistory[numLaps].bestTime = bestRunStat.lapTime;
-				runStatHistory[numLaps].bestError = bestRunStat.totalError;
+				runStatHistory[numLaps].bestP = runStat.bestP;
+				runStatHistory[numLaps].bestI = runStat.bestI;
+				runStatHistory[numLaps].bestD = runStat.bestD;
+				runStatHistory[numLaps].bestTime = runStat.bestTime;
+				runStatHistory[numLaps].bestError = runStat.bestError;
 			}
 
 			numLaps++;
 
 			//Calculate new P, I, D values
 			do
-				currentRunStat.P = bestRunStat.P + (float)annealNumerator/(float)annealDenominator * randFloatRange(-annealStepP, annealStepP);
-			while (currentRunStat.P < 0 || currentRunStat.P > bestRunStat.P + annealStepP || currentRunStat.P < bestRunStat.P - annealStepP);
+				runStat.P = runStat.bestP + (float)annealNumerator/(float)annealDenominator * randFloatRange(-annealStepP, annealStepP);
+			while (runStat.P < 0 || runStat.P > runStat.bestP + annealStepP || runStat.P < runStat.bestP - annealStepP);
 			
 			do
-			currentRunStat.I = bestRunStat.I + (float)annealNumerator/(float)annealDenominator * randFloatRange(-annealStepI, annealStepI);
-			while (currentRunStat.I < 0 || currentRunStat.I > bestRunStat.I + annealStepI || currentRunStat.I < bestRunStat.I - annealStepI);
+				runStat.I = runStat.bestI + (float)annealNumerator/(float)annealDenominator * randFloatRange(-annealStepI, annealStepI);
+			while (runStat.I < 0 || runStat.I > runStat.bestI + annealStepI || runStat.I < runStat.bestI - annealStepI);
 			
 			do
-			currentRunStat.D = bestRunStat.D + (float)annealNumerator/(float)annealDenominator * randFloatRange(-annealStepD, annealStepD);
-			while (currentRunStat.D < 0 || currentRunStat.D > bestRunStat.D + annealStepD || currentRunStat.D < bestRunStat.D - annealStepD);
+				runStat.D = runStat.bestD + (float)annealNumerator/(float)annealDenominator * randFloatRange(-annealStepD, annealStepD);
+			while (runStat.D < 0 || runStat.D > runStat.bestD + annealStepD || runStat.D < runStat.bestD - annealStepD);
 
 			annealNumerator--;
 
 			//Reset Runtime and error
-			currentRunStat.lapTime    = 0;
-			currentRunStat.totalError = 0;
+			runStat.lapTime    = 0;
+			runStat.totalError = 0;
 
 			//Print new P, I, D values
 			/*
@@ -284,7 +279,7 @@ int think()
 	//The P multiplicand
 	error = desired - actual;
 
-	currentRunStat.totalError += abs(error);
+	runStat.totalError += abs(error);
 	
 	//The D multiplicand
 	dError = (2 * error - oldError) / (long)((OrangutanTime::ms() - lastFrameTime));
@@ -306,7 +301,7 @@ int think()
 	//sendMessage(message);
 
 	//Turn rate
-	return currentRunStat.P * error + currentRunStat.I * sumError + currentRunStat.D * dError;
+	return runStat.P * error + runStat.I * sumError + runStat.D * dError;
 }
 
 //Perform some action.
@@ -374,7 +369,7 @@ void act(int turnRate)
 	{
 		//We went off track..
 		OrangutanMotors::setSpeeds(0,0);
-		currentRunStat.totalError += 100;
+		runStat.totalError += 100;
 	}
 	else
 	{

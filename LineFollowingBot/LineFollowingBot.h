@@ -56,8 +56,7 @@ static unsigned long
 	lapStartTime = 0;
 
 struct RunStat
-	bestRunStat,
-	currentRunStat,
+	runStat,
 	runStatHistory[LAPS_PER_RUN];
 
 float
