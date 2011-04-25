@@ -14,7 +14,7 @@ int main()
 	int
 		turn = 0;
 	char
-		message[256];
+		message[128];
 
 	//programRunning will always be true... I just hate while(1)'s.
 	while (programRunning)
@@ -29,7 +29,6 @@ int main()
 		OrangutanSerial::sendBlocking(message, strlen(message));*/
 
 		act(turn);
-		dequeue();
 		//OrangutanMotors::setSpeeds(-50,0);
 	   	
 		//sprintf (message, "I'm still alive! %u\r\n", OrangutanTime::ms());
@@ -90,6 +89,7 @@ void initialize()
 	OrangutanAnalog::setMode(MODE_10_BIT);//MODE_8_BIT
 	OrangutanSerial::setBaudRate(9600);
 	OrangutanTime::reset();
+	//OrangutanMotors::setSpeeds(0,0);
 
 	//Initialize sensor readings and random seed..
 	for (int i = 0; i < NUM_LINE_SENSORS; i++)
@@ -101,14 +101,14 @@ void initialize()
 
 	//Initialize first run statistics
 	bestRunStat.P          = 60.0;
-	bestRunStat.I          =  0.0;
-	bestRunStat.D          =  0.0;
+	bestRunStat.I          =  0.1;
+	bestRunStat.D          = 10.0;
 	bestRunStat.lapTime    = 9999;
 	bestRunStat.totalError = 9999;
 
 	currentRunStat.P          = 60.0;
-	currentRunStat.I          =  0.0;
-	currentRunStat.D          =  0.0;
+	currentRunStat.I          =  0.1;
+	currentRunStat.D          = 10.0;
 	currentRunStat.lapTime    =  0;
 	currentRunStat.totalError =  0;
 
@@ -117,7 +117,6 @@ void initialize()
 		char
 			message[64];
 		sprintf(message, "Program will start in %d\r\n", i);
-		enqueue(message);
 		sendMessage(message);
 		OrangutanTime::delayMilliseconds(1000);
 	}
@@ -155,7 +154,7 @@ int think()
 		lastFrameTime = 0;
 	
 	char
-		message[128];
+		message[256];
 
 	//Calculate Error
 	for (unsigned char i = 0; i < NUM_LINE_SENSORS; i++)
@@ -184,7 +183,6 @@ int think()
 	//We've completed a lap.
 	else if (numActivated == NUM_LINE_SENSORS)
 	{
-		unsigned long lapTime = OrangutanTime::ms() - lapStartTime;
 
 		//If we just completed a lap
 		if (lapStarted)
@@ -192,14 +190,18 @@ int think()
 			//Record lap time
 			currentRunStat.lapTime = OrangutanTime::ms() - lapStartTime;
 			
-			runStatHistory[numLaps] = currentRunStat;
+			runStatHistory[numLaps].P = currentRunStat.P;
+			runStatHistory[numLaps].I = currentRunStat.I;
+			runStatHistory[numLaps].D = currentRunStat.D;
+			runStatHistory[numLaps].lapTime = currentRunStat.lapTime;
+			runStatHistory[numLaps].totalError = currentRunStat.totalError;
 
 						
-			memset(message, 0, 128);
+			/*memset(message, 0, 128);
 			sprintf (message, "bestRunStat(%u) > currentRunStat(%u) == %d\r\n",
 				bestRunStat.lapTime + bestRunStat.totalError, currentRunStat.lapTime + currentRunStat.totalError,
 				(bestRunStat.lapTime + bestRunStat.totalError > currentRunStat.lapTime + currentRunStat.totalError));
-			sendMessage(message);
+			sendMessage(message);*/
 
 			//If current run is better than any previous found.
 			//(First run is usually bad, so we will always say second was worse to re-run it.)
@@ -207,7 +209,7 @@ int think()
 				&& numLaps != 0 && currentRunStat.lapTime > 7000)
 				|| bestRunStat.P == 0)
 			{
-				memset(message, 0, 128);
+				//memset(message, 0, 128);
 				sendMessage("New Best Found!\r\n");
 				bestRunStat.P          = currentRunStat.P;
 				bestRunStat.I          = currentRunStat.I;
@@ -219,14 +221,46 @@ int think()
 				runStatHistory[numLaps].bestD = currentRunStat.D;
 				runStatHistory[numLaps].bestTime = currentRunStat.lapTime;
 				runStatHistory[numLaps].bestError = currentRunStat.totalError;
-			}	
+			}
+			else
+			{
+				runStatHistory[numLaps].P = currentRunStat.P;
+				runStatHistory[numLaps].I = currentRunStat.I;
+				runStatHistory[numLaps].D = currentRunStat.D;
+				runStatHistory[numLaps].lapTime = currentRunStat.lapTime;
+				runStatHistory[numLaps].totalError = currentRunStat.totalError;
+				runStatHistory[numLaps].bestP = bestRunStat.P;
+				runStatHistory[numLaps].bestI = bestRunStat.I;
+				runStatHistory[numLaps].bestD = bestRunStat.D;
+				runStatHistory[numLaps].bestTime = bestRunStat.bestTime;
+				runStatHistory[numLaps].bestError = bestRunStat.bestError;
+			}
+
+			sendMessage("Got here\r\n");
+			/*memset(message, 0, 128);
+			sprintf(message, "(%.1f %.1f %.1f)\r\n",
+					currentRunStat.P, currentRunStat.I, currentRunStat.D);
+			sendMessage(message);*/
+			/*memset(message, 0, 128);
+			sprintf(message, "(%.1f %.1f %.1f) Best (%.1f %.1f %.1f)\r\n",
+					currentRunStat.P, currentRunStat.I, currentRunStat.D,
+					bestRunStat.P, bestRunStat.I, bestRunStat.D);
+			sendMessage(message);*/
 
 			numLaps++;
 
 			//Calculate new P, I, D values
-			currentRunStat.P = bestRunStat.P + (float)annealNumerator/(float)annealDenominator * randFloatRange(-annealStepP, annealStepP);
+			do
+				currentRunStat.P = bestRunStat.P + (float)annealNumerator/(float)annealDenominator * randFloatRange(-annealStepP, annealStepP);
+			while (currentRunStat.P < 0 || currentRunStat.P > bestRunStat.P + annealStepP || currentRunStat.P < bestRunStat.P - annealStepP);
+			
+			do
 			currentRunStat.I = bestRunStat.I + (float)annealNumerator/(float)annealDenominator * randFloatRange(-annealStepI, annealStepI);
+			while (currentRunStat.I < 0 || currentRunStat.I > bestRunStat.I + annealStepI || currentRunStat.I < bestRunStat.I - annealStepI);
+			
+			do
 			currentRunStat.D = bestRunStat.D + (float)annealNumerator/(float)annealDenominator * randFloatRange(-annealStepD, annealStepD);
+			while (currentRunStat.D < 0 || currentRunStat.D > bestRunStat.D + annealStepD || currentRunStat.D < bestRunStat.D - annealStepD);
 
 			annealNumerator--;
 
@@ -254,14 +288,16 @@ int think()
 	//We are trying to follow the line.
 	else
 	{
-		//If we just crossed the line
+		//If we just left the line
 		if (allActivated)
 		{
 			lapStarted = true;
 			lapStartTime = OrangutanTime::ms();
+
 		}
 		noneActivated = false;
 		allActivated  = false;
+		sumError = 0;
 	}
 
 
@@ -297,7 +333,7 @@ int think()
 void act(int turnRate)
 {
 	static const int
-		forward = 300;
+		forward = 1000;
 		//ramp = 2;
 	//static int
 	//	leftMotorSpeed = 0,
@@ -356,10 +392,8 @@ void act(int turnRate)
 	}
 	else if (noneActivated) 
 	{
-		//We went off track.. slowly back up.
-		//OrangutanMotors::setSpeeds(-50,-50);
+		//We went off track..
 		OrangutanMotors::setSpeeds(0,0);
-		//Add extra error to help ensure it loses.
 		currentRunStat.totalError += 100;
 	}
 	else
@@ -439,21 +473,3 @@ float randFloatRange(float minVal, float maxVal)
 	return randFloat() * (maxVal - minVal) + minVal; 
 }
 
-void enqueue(char* message)
-{
-	strcpy(q[lastIndex%size], message);
-	lastIndex++;
-
-	empty = false;
-}
-
-void dequeue()
-{
-	if(!empty && lastMessageSentTime + MESSAGE_DELAY + 50 <= OrangutanTime::ms())
-	{
-		sendMessage(q[qIndex%size]);
-		qIndex++;
-		if(qIndex == lastIndex)
-			empty = true;
-	}
-}
