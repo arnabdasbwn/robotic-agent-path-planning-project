@@ -1,0 +1,1072 @@
+
+Run 3 stats:
+P = 72.618301, I = 0.026922, D = 26.832602
+Time for Lap 3 is 12124
+Error for lap 3 is 5347
+Best Run So Far (59.63, 0.10, 19.21) time = 0 error = 0
+------------------------------
+Run 4 stats:
+P = 73.289795, I = 0.128359, D = 17.035456
+Time for Lap 4 is 59
+Error for lap 4 is 56
+Best Run So Far (59.63, 0.10, 19.21) time = 0 error = 0
+------------------------------
+Run 5 stats:
+P = 62.915386, I = 0.078129, D = 16.338787
+Time for Lap 5 is 11680
+Error for lap 5 is 12820
+Best Run So Far (59.63, 0.10, 19.21) time = 0 error = 0
+------------------------------
+Run 6 stats:
+P = 45.492477, I = 0.179073, D = 22.341366
+Time for Lap 6 is 11195
+Error for lap 6 is 4575
+Best Run So Far (45.49, 0.18, 22.34) time = 11195 error = 4575
+------------------------------
+Run 7 stats:
+P = 38.599384, I = 0.194367, D = 14.763653
+Time for Lap 7 is 11172
+Error for lap 7 is 5397
+Best Run So Far (45.49, 0.18, 22.34) time = 0 error = 0
+------------------------------
+Run 8 stats:
+P = 50.706329, I = 0.191692, D = 20.656944
+Time for Lap 8 is 11346
+Error for lap 8 is 4806
+Best Run So Far (45.49, 0.18, 22.34) time = 0 error = 0
+------------------------------
+Run 9 stats:
+P = 38.979046, I = 0.244313, D = 15.037850
+Time for Lap 9 is 11167
+Error for lap 9 is 5525
+Best Run So Far (45.49, 0.18, 22.34) time = 0 error = 0
+Program has run to completion.
+Program will start in 4
+Program will start in 3
+Program will start in 2
+Program will start in 1
+ProgrProgrProgrProgrProgram will start in 1
+ProgrProgrProgrProgram will start in 1
+ProgrProgrProgram will start in 1
+ProgrProgram will start in 1
+Program will start in 1
+bestRun P (60.000000) I (0.100000) D (10.000000)
+New Best Found!
+bestRun P (69.654648) I (0.177744) D (14.228703)
+bestRun P (69.654648) I (0.177744) D (14.228703)
+bestRun P (69.654648) I (0.177744) D (14.228703)
+bestRun P (69.654648) I (0.177744) D (14.228703)
+bestRun P (69.654648) I (0.177744) D (14.228703)
+bestRun P (69.654648) I (0.177744) D (14.228703)
+bestRun P (69.654648) I (0.177744) D (14.228703)
+bestRun P (69.654648) I (0.177744) D (14.228703)
+bestRun P (69.654648) I (0.177744) D (14.228703)
+Printing gathered data
+Num Laps = 10
+------------------------------
+Run 0 stats:
+P = 60.000000, I = 0.100000, D = 10.000000
+Time for Lap 0 is 10978
+Error for lap 0 is 4933
+Best Run So Far (60.00, 0.10, 10.00) time = 0 error = 0
+------------------------------
+Run 1 stats:
+P = 69.654648, I = 0.177744, D = 14.228703
+Time for Lap 1 is 11931
+Error for lap 1 is 4163
+Best Run So Far (69.65, 0.18, 14.23) time = 11931 error = 4163
+------------------------------
+Run 2 stats:
+P = 59.549507, I = 0.223863, D = 8.583499
+Time for Lap 2 is 11675
+Error for lap 2 is 4473
+Best Run So Far (69.65, 0.18, 14.23) time = 0 error = 0
+------------------------------
+Run 3 stats:
+P = 53.875370, I = 0.194967, D = 11.889639
+Time for Lap 3 is 11608
+Error for lap 3 is 4717
+Best Run So Far (69.65, 0.18, 14.23) time = 0 error = 0
+------------------------------
+Run 4 stats:
+P = 53.202614, I = 0.193005, D = 22.797161
+Time for Lap 4 is 11378
+Error for lap 4 is 5047
+Best Run So Far (69.65, 0.18, 14.23) time = 0 error = 0
+------------------------------
+Run 5 stats:
+P = 50.719883, I = 0.271091, D = 23.239292
+Time for Lap 5 is 19
+Error for lap 5 is 15
+Best Run So Far (69.65, 0.18, 14.23) time = 0 error = 0
+------------------------------
+Run 6 stats:
+P = 75.560249, I = 0.151132, D = 16.394091
+Time for Lap 6 is 11944
+Error for lap 6 is 4562
+Best Run So Far (69.65, 0.18, 14.23) time = 0 error = 0
+------------------------------
+Run 7 stats:
+P = 63.262936, I = 0.142611, D = 4.900844
+Time for Lap 7 is 11795
+Error for lap 7 is 4647
+Best Run So Far (69.65, 0.18, 14.23) time = 0 error = 0
+------------------------------
+Run 8 stats:
+P = 87.969154, I = 0.216071, D = 9.682195
+Time for Lap 8 is 12669
+Error for lap 8 is 4521
+Best Run So Far (69.65, 0.18, 14.23) time = 0 error = 0
+------------------------------
+Run 9 stats:
+P = 73.396782, I = 0.085038, D = 17.667229
+Time for Lap 9 is 12224
+Error for lap 9 is 5075
+Best Run So Far (69.65, 0.18, 14.23) time = 0 error = 0
+Program has run to completion.
+Printing gathered data
+Num Laps = 10
+------------------------------
+Run 0 stats:
+P = 60.000000, I = 0.100000, D = 10.000000
+Time for Lap 0 is 10978
+Error for lap 0 is 4933
+Best Run So Far (60.00, 0.10, 10.00) time = 0 error = 0
+------------------------------
+Run 1 stats:
+P = 69.654648, I = 0.177744, D = 14.228703
+Time for Lap 1 is 11931
+Error for lap 1 is 4163
+Best Run So Far (69.65, 0.18, 14.23) time = 11931 error = 4163
+------------------------------
+Run 2 stats:
+P = 59.549507, I = 0.223863, D = 8.583499
+Time for Lap 2 is 11675
+Error for lap 2 is 4473
+Best Run So Far (69.65, 0.18, 14.23) time = 0 error = 0
+------------------------------
+Run 3 stats:
+P = 53.875370, I = 0.194967, D = 11.889639
+Time for Lap 3 is 11608
+Error for lap 3 is 4717
+Best Run So Far (69.65, 0.18, 14.23) time = 0 error = 0
+------------------------------
+Run 4 stats:
+P = 53.202614, I = 0.193005, D = 22.797161
+Time for Lap 4 is 11378
+Error for lap 4 is 5047
+Best Run So Far (69.65, 0.18, 14.23) time = 0 error = 0
+------------------------------
+Run 5 stats:
+P = 50.719883, I = 0.271091, D = 23.239292
+Time for Lap 5 is 19
+Error for lap 5 is 15
+Best Run So Far (69.65, 0.18, 14.23) time = 0 error = 0
+------------------------------
+Run 6 stats:
+P = 75.560249, I = 0.151132, D = 16.394091
+Time for Lap 6 is 11944
+Error for lap 6 is 4562
+Best Run So Far (69.65, 0.18, 14.23) time = 0 error = 0
+------------------------------
+Run 7 stats:
+P = 63.262936, I = 0.142611, D = 4.900844
+Time for Lap 7 is 11795
+Error for lap 7 is 4647
+Best Run So Far (69.65, 0.18, 14.23) time = 0 error = 0
+------------------------------
+Run 8 stats:
+P = 87.969154, I = 0.216071, D = 9.682195
+Time for Lap 8 is 12669
+Error for lap 8 is 4521
+Best Run So Far (69.65, 0.18, 14.23) time = 0 error = 0
+------------------------------
+Run 9 stats:
+P = 73.396782, I = 0.085038, D = 17.667229
+Time for Lap 9 is 12224
+Error for lap 9 is 5075
+Best Run So Far (69.65, 0.18, 14.23) time = 0 error = 0
+Program has run to completion.
+Printing gathered data
+Num Laps = 10
+------------------------------
+Run 0 stats:
+P = 60.000000, I = 0.100000, D = 10.000000
+Time for Lap 0 is 10978
+Error for lap 0 is 4933
+Best Run So Far (60.00, 0.10, 10.00) time = 0 error = 0
+------------------------------
+Run 1 stats:
+P = 69.654648, I = 0.177744, D = 14.228703
+Time for Lap 1 is 11931
+Error for lap 1 is 4163
+Best Run So Far (69.65, 0.18, 14.23) time = 11931 error = 4163
+------------------------------
+Run 2 stats:
+P = 59.549507, I = 0.223863, D = 8.583499
+Time for Lap 2 is 11675
+Error for lap 2 is 4473
+Best Run So Far (69.65, 0.18, 14.23) time = 0 error = 0
+------------------------------
+Run 3 stats:
+P = 53.875370, I = 0.194967, D = 11.889639
+Time for Lap 3 is 11608
+Error for lap 3 is 4717
+Best Run So Far (69.65, 0.18, 14.23) time = 0 error = 0
+------------------------------
+Run 4 stats:
+P = 53.202614, I = 0.193005, D = 22.797161
+Time for Lap 4 is 11378
+Error for lap 4 is 5047
+Best Run So Far (69.65, 0.18, 14.23) time = 0 error = 0
+------------------------------
+Run 5 stats:
+P = 50.719883, I = 0.271091, D = 23.239292
+Time for Lap 5 is 19
+Error for lap 5 is 15
+Best Run So Far (69.65, 0.18, 14.23) time = 0 error = 0
+------------------------------
+Run 6 stats:
+P = 75.560249, I = 0.151132, D = 16.394091
+Time for Lap 6 is 11944
+Error for lap 6 is 4562
+Best Run So Far (69.65, 0.18, 14.23) time = 0 error = 0
+------------------------------
+Run 7 stats:
+P = 63.262936, I = 0.142611, D = 4.900844
+Time for Lap 7 is 11795
+Error for lap 7 is 4647
+Best Run So Far (69.65, 0.18, 14.23) time = 0 error = 0
+------------------------------
+Run 8 stats:
+P = 87.969154, I = 0.216071, D = 9.682195
+Time for Lap 8 is 12669
+Error for lap 8 is 4521
+Best Run So Far (69.65, 0.18, 14.23) time = 0 error = 0
+------------------------------
+Run 9 stats:
+P = 73.396782, I = 0.085038, D = 17.667229
+Time for Lap 9 is 12224
+Error for lap 9 is 5075
+Best Run So Far (69.65, 0.18, 14.23) time = 0 error = 0
+Program has run to completion.
+Printing gathered data
+Num Laps = 10
+------------------------------
+Run 0 stats:
+P = 60.000000, I = 0.100000, D = 10.000000
+Time for Lap 0 is 10978
+Error for lap 0 is 4933
+Best Run So Far (60.00, 0.10, 10.00) time = 0 error = 0
+------------------------------
+Run 1 stats:
+P = 69.654648, I = 0.177744, D = 14.228703
+Time for Lap 1 is 11931
+Error for lap 1 is 4163
+Best Run So Far (69.65, 0.18, 14.23) time = 11931 error = 4163
+------------------------------
+Run 2 stats:
+P = 59.549507, I = 0.223863, D = 8.583499
+Time for Lap 2 is 11675
+Error for lap 2 is 4473
+Program will start in 4
+Program will start in 3
+Program will start in 2
+Program will start in 1
+ProgrProgrProgrProgrProgram will start in 1
+ProgrProgrProgrProgram will start in 1
+ProgrProgrProgram will start in 1
+ProgrProgram will start in 1
+Program will start in 1
+bestRun P (60.000000) I (0.100000) D (10.000000)
+New Best Found!
+bestRun P (49.086723) I (0.048196) D (14.811973)
+bestRun P (49.086723) I (0.048196) D (14.811973)
+New Best Found!
+bestRun P (37.669685) I (0.095354) D (22.460938)
+New Best Found!
+bestRun P (34.021950) I (0.140690) D (16.810669)
+bestRun P (34.021950) I (0.140690) D (16.810669)
+bestRun P (34.021950) I (0.140690) D (16.810669)
+bestRun P (34.021950) I (0.140690) D (16.810669)
+bestRun P (34.021950) I (0.140690) D (16.810669)
+bestRun P (34.021950) I (0.140690) D (16.810669)
+Printing gathered data
+Num Laps = 10
+------------------------------
+Run 0 stats:
+P = 60.000000, I = 0.100000, D = 10.000000
+Time for Lap 0 is 11439
+Error for lap 0 is 5147
+Best Run So Far (60.00, 0.10, 10.00) time = 0 error = 0
+------------------------------
+Run 1 stats:
+P = 49.086723, I = 0.048196, D = 14.811973
+Time for Lap 1 is 11470
+Error for lap 1 is 6036
+Best Run So Far (49.09, 0.05, 14.81) time = 11470 error = 6036
+------------------------------
+Run 2 stats:
+P = 64.540756, I = 0.029582, D = 19.439064
+Time for Lap 2 is 12124
+Error for lap 2 is 5928
+Best Run So Far (49.09, 0.05, 14.81) time = 0 error = 0
+------------------------------
+Run 3 stats:
+P = 37.669685, I = 0.095354, D = 22.460938
+Time for Lap 3 is 11323
+Error for lap 3 is 5749
+Best Run So Far (37.67, 0.10, 22.46) time = 11323 error = 5749
+------------------------------
+Run 4 stats:
+P = 34.021950, I = 0.140690, D = 16.810669
+Time for Lap 4 is 11158
+Error for lap 4 is 5577
+Best Run So Far (34.02, 0.14, 16.81) time = 11158 error = 5577
+------------------------------
+Run 5 stats:
+P = 18.712049, I = 0.088306, D = 11.837530
+Time for Lap 5 is 1423
+Error for lap 5 is 50912
+Best Run So Far (34.02, 0.14, 16.81) time = 0 error = 0
+------------------------------
+Run 6 stats:
+P = 43.164696, I = 0.214838, D = 15.024407
+Time for Lap 6 is 11642
+Error for lap 6 is 6625
+Best Run So Far (34.02, 0.14, 16.81) time = 0 error = 0
+------------------------------
+Run 7 stats:
+P = 42.808746, I = 0.085935, D = 9.315197
+Time for Lap 7 is 11467
+Error for lap 7 is 6046
+Best Run So Far (34.02, 0.14, 16.81) time = 0 error = 0
+------------------------------
+Run 8 stats:
+P = 23.872601, I = 0.092513, D = 21.285803
+Time for Lap 8 is 4575
+Error for lap 8 is 9142
+Best Run So Far (34.02, 0.14, 16.81) time = 0 error = 0
+------------------------------
+Run 9 stats:
+P = 48.383270, I = 0.123391, D = 21.110592
+Time for Lap 9 is 107
+Error for lap 9 is 1242
+Best Run So Far (34.02, 0.14, 16.81) time = 0 error = 0
+Program has run to completion.
+Printing gathered data
+Num Laps = 10
+------------------------------
+Run 0 stats:
+P = 60.000000, I = 0.100000, D = 10.000000
+Time for Lap 0 is 11439
+Error for lap 0 is 5147
+Best Run So Far (60.00, 0.10, 10.00) time = 0 error = 0
+------------------------------
+Run 1 stats:
+P = 49.086723, I = 0.048196, D = 14.811973
+Time for Lap 1 is 11470
+Error for lap 1 is 6036
+Best Run So Far (49.09, 0.05, 14.81) time = 11470 error = 6036
+------------------------------
+Run 2 stats:
+P = 64.540756, I = 0.029582, D = 19.439064
+Time for Lap 2 is 12124
+Error for lap 2 is 5928
+Best Run So Far (49.09, 0.05, 14.81) time = 0 error = 0
+------------------------------
+Run 3 stats:
+P = 37.669685, I = 0.095354, D = 22.460938
+Time for Lap 3 is 11323
+Error for lap 3 is 5749
+Best Run So Far (37.67, 0.10, 22.46) time = 11323 error = 5749
+------------------------------
+Run 4 stats:
+P = 34.021950, I = 0.140690, D = 16.810669
+Time for Lap 4 is 11158
+Error for lap 4 is 5577
+Best Run So Far (34.02, 0.14, 16.81) time = 11158 error = 5577
+------------------------------
+Run 5 stats:
+P = 18.712049, I = 0.088306, D = 11.837530
+Time for Lap 5 is 1423
+Error for lap 5 is 50912
+Best Run So Far (34.02, 0.14, 16.81) time = 0 error = 0
+------------------------------
+Run 6 stats:
+P = 43.164696, I = 0.214838, D = 15.024407
+Time for Lap 6 is 11642
+Error for lap 6 is 6625
+Best Run So Far (34.02, 0.14, 16.81) time = 0 error = 0
+------------------------------
+Run 7 stats:
+P = 42.808746, I = 0.085935, D = 9.315197
+Time for Lap 7 is 11467
+Error for lap 7 is 6046
+Best Run So Far (34.02, 0.14, 16.81) time = 0 error = 0
+------------------------------
+Run 8 stats:
+P = 23.872601, I = 0.092513, D = 21.285803
+Time for Lap 8 is 4575
+Error for lap 8 is 9142
+Best Run So Far (34.02, 0.14, 16.81) time = 0 error = 0
+------------------------------
+Run 9 stats:
+P = 48.383270, I = 0.123391, D = 21.110592
+Time for Lap 9 is 107
+Error for lap 9 is 1242
+Best Run So Far (34.02, 0.14, 16.81) time = 0 error = 0
+Program has run to completion.
+Program will start in 4
+Program will start in 3
+Program will start in 2
+Program will start in 1
+ProgrProgrProgrProgrProgram will start in 1
+ProgrProgrProgrProgram will start in 1
+ProgrProgrProgram will start in 1
+ProgrProgram will start in 1
+Program will start in 1
+bestRun P (60.000000) I (0.100000) D (10.000000)
+bestRun P (60.000000) I (0.100000) D (10.000000)
+New Best Found!
+bestRun P (79.739212) I (0.122262) D (6.740521)
+bestRun P (79.739212) I (0.122262) D (6.740521)
+bestRun P (79.739212) I (0.122262) D (6.740521)
+bestRun P (79.739212) I (0.122262) D (6.740521)
+bestRun P (79.739212) I (0.122262) D (6.740521)
+New Best Found!
+bestRun P (68.730461) I (0.047884) D (1.856561)
+bestRun P (68.730461) I (0.047884) D (1.856561)
+bestRun P (68.730461) I (0.047884) D (1.856561)
+Printing gathered data
+Num Laps = 10
+------------------------------
+Run 0 stats:
+P = 60.000000, I = 0.100000, D = 10.000000
+Time for Lap 0 is 8213
+Error for lap 0 is 4189
+Best Run So Far (60.00, 0.10, 10.00) time = 0 error = 0
+------------------------------
+Run 1 stats:
+P = 63.177284, I = 0.188949, D = 0.015349
+Time for Lap 1 is 8351
+Error for lap 1 is 46539
+Best Run So Far (60.00, 0.10, 10.00) time = 0 error = 0
+------------------------------
+Run 2 stats:
+P = 79.739212, I = 0.122262, D = 6.740521
+Time for Lap 2 is 8675
+Error for lap 2 is 4058
+Best Run So Far (79.74, 0.12, 6.74) time = 8675 error = 4058
+------------------------------
+Run 3 stats:
+P = 73.466614, I = 0.094509, D = 9.034458
+Time for Lap 3 is 8574
+Error for lap 3 is 4239
+Best Run So Far (79.74, 0.12, 6.74) time = 0 error = 0
+------------------------------
+Run 4 stats:
+P = 73.083954, I = 0.214051, D = 9.606600
+Time for Lap 4 is 8999
+Error for lap 4 is 4304
+Best Run So Far (79.74, 0.12, 6.74) time = 0 error = 0
+------------------------------
+Run 5 stats:
+P = 73.182037, I = 0.159321, D = 8.486647
+Time for Lap 5 is 8678
+Error for lap 5 is 4220
+Best Run So Far (79.74, 0.12, 6.74) time = 0 error = 0
+------------------------------
+Run 6 stats:
+P = 74.970985, I = 0.045197, D = 1.396316
+Time for Lap 6 is 8981
+Error for lap 6 is 5111
+Best Run So Far (79.74, 0.12, 6.74) time = 0 error = 0
+------------------------------
+Run 7 stats:
+P = 68.730461, I = 0.047884, D = 1.856561
+Time for Lap 7 is 8459
+Error for lap 7 is 4223
+Best Run So Far (68.73, 0.05, 1.86) time = 8459 error = 4223
+------------------------------
+Run 8 stats:
+P = 77.737831, I = 0.119900, D = 6.017652
+Time for Lap 8 is 9212
+Error for lap 8 is 4804
+Best Run So Far (68.73, 0.05, 1.86) time = 0 error = 0
+------------------------------
+Run 9 stats:
+P = 77.725700, I = 0.118279, D = 3.713507
+Time for Lap 9 is 8925
+Error for lap 9 is 4188
+Best Run So Far (68.73, 0.05, 1.86) time = 0 error = 0
+Program has run to completion.
+Printing gathered data
+Num Laps = 10
+------------------------------
+Run 0 stats:
+P = 60.000000, I = 0.100000, D = 10.000000
+Time for Lap 0 is 8213
+Error for lap 0 is 4189
+Best Run So Far (60.00, 0.10, 10.00) time = 0 error = 0
+------------------------------
+Run 1 stats:
+P = 63.177284, I = 0.188949, D = 0.015349
+Time for Lap 1 is 8351
+Error for lap 1 is 46539
+Best Run So Far (60.00, 0.10, 10.00) time = 0 error = 0
+------------------------------
+Run 2 stats:
+P = 79.739212, I = 0.122262, D = 6.740521
+Time for Lap 2 is 8675
+Error for lap 2 is 4058
+Best Run So Far (79.74, 0.12, 6.74) time = 8675 error = 4058
+------------------------------
+Run 3 stats:
+P = 73.466614, I = 0.094509, D = 9.034458
+Time for Lap 3 is 8574
+Error for lap 3 is 4239
+Best Run So Far (79.74, 0.12, 6.74) time = 0 error = 0
+------------------------------
+Run 4 stats:
+P = 73.083954, I = 0.214051, D = 9.606600
+Time for Lap 4 is 8999
+Error for lap 4 is 4304
+Best Run So Far (79.74, 0.12, 6.74) time = 0 error = 0
+------------------------------
+Run 5 stats:
+P = 73.182037, I = 0.159321, D = 8.486647
+Time for Lap 5 is 8678
+Error for lap 5 is 4220
+Best Run So Far (79.74, 0.12, 6.74) time = 0 error = 0
+------------------------------
+Run 6 stats:
+P = 74.970985, I = 0.045197, D = 1.396316
+Time for Lap 6 is 8981
+Error for lap 6 is 5111
+Best Run So Far (79.74, 0.12, 6.74) time = 0 error = 0
+------------------------------
+Run 7 stats:
+P = 68.730461, I = 0.047884, D = 1.856561
+Time for Lap 7 is 8459
+Error for lap 7 is 4223
+Best Run So Far (68.73, 0.05, 1.86) time = 8459 error = 4223
+------------------------------
+Run 8 stats:
+P = 77.737831, I = 0.119900, D = 6.017652
+Time for Lap 8 is 9212
+Error for lap 8 is 4804
+Best Run So Far (68.73, 0.05, 1.86) time = 0 error = 0
+------------------------------
+Run 9 stats:
+P = 77.725700, I = 0.118279, D = 3.713507
+Time for Lap 9 is 8925
+Error for lap 9 is 4188
+Best Run So Far (68.73, 0.05, 1.86) time = 0 error = 0
+Program has run to completion.
+Printing gathered data
+Num Laps = 10
+------------------------------
+Run 0 stats:
+P = 60.000000, I = 0.100000, D = 10.000000
+Time for Lap 0 is 8213
+Error for lap 0 is 4189
+Best Run So Far (60.00, 0.10, 10.00) time = 0 error = 0
+------------------------------
+Run 1 stats:
+P = 63.177284, I = 0.188949, D = 0.015349
+Time for Lap 1 is 8351
+Error for lap 1 is 46539
+Best Run So Far (60.00, 0.10, 10.00) time = 0 error = 0
+------------------------------
+Run 2 stats:
+P = 79.739212, I = 0.122262, D = 6.740521
+Time for Lap 2 is 8675
+Error for lap 2 is 4058
+Best Run So Far (79.74, 0.12, 6.74) time = 8675 error = 4058
+------------------------------
+Run 3 stats:
+P = 73.466614, I = 0.094509, D = 9.034458
+Time for Lap 3 is 8574
+Error for lap 3 is 4239
+Best Run So Far (79.74, 0.12, 6.74) time = 0 error = 0
+------------------------------
+Run 4 stats:
+P = 73.083954, I = 0.214051, D = 9.606600
+Time for Lap 4 is 8999
+Error for lap 4 is 4304
+Best Run So Far (79.74, 0.12, 6.74) time = 0 error = 0
+------------------------------
+Run 5 stats:
+P = 73.182037, I = 0.159321, D = 8.486647
+Time for Lap 5 is 8678
+Error for lap 5 is 4220
+Best Run So Far (79.74, 0.12, 6.74) time = 0 error = 0
+------------------------------
+Run 6 stats:
+P = 74.970985, I = 0.045197, D = 1.396316
+Time for Lap 6 is 8981
+Error for lap 6 is 5111
+Best Run So Far (79.74, 0.12, 6.74) time = 0 error = 0
+------------------------------
+Run 7 stats:
+P = 68.730461, I = 0.047884, D = 1.856561
+Time for Lap 7 is 8459
+Error for lap 7 is 4223
+Best Run So Far (68.73, 0.05, 1.86) time = 8459 error = 4223
+------------------------------
+Run 8 stats:
+P = 77.737831, I = 0.119900, D = 6.017652
+Time for Lap 8 is 9212
+Error for lap 8 is 4804
+Best Run So Far (68.73, 0.05, 1.86) time = 0 error = 0
+------------------------------
+Run 9 stats:
+P = 77.725700, I = 0.118279, D = 3.713507
+Time for Lap 9 is 8925
+Error for lap 9 is 4188
+Best Run So Far (68.73, 0.05, 1.86) time = 0 error = 0
+Program has run to completion.
+Printing gathered data
+Num Laps = 10
+------------------------------
+Run 0 stats:
+P = 60.000000, I = 0.100000, D = 10.000000
+Time for Lap 0 is 8213
+Error for lap 0 is 4189
+Best Run So Far (60.00, 0.10, 10.00) time = 0 error = 0
+------------------------------
+Run 1 stats:
+P = 63.177284, I = 0.188949, D = 0.015349
+Time for Lap 1 is 8351
+Error for lap 1 is 46539
+Best Run So Far (60.00, 0.10, 10.00) time = 0 error = 0
+------------------------------
+Run 2 stats:
+P = 79.739212, I = 0.122262, D = 6.740521
+Time for Lap 2 is 8675
+Error for lap 2 is 4058
+Best Run So Far (79.74, 0.12, 6.74) time = 8675 error = 4058
+------------------------------
+Run 3 stats:
+P = 73.466614, I = 0.094509, D = 9.034458
+Time for Lap 3 is 8574
+Error for lap 3 is 4239
+Best Run So Far (79.74, 0.12, 6.74) time = 0 error = 0
+------------------------------
+Run 4 stats:
+P = 73.083954, I = 0.214051, D = 9.606600
+Time for Lap 4 is 8999
+Error for lap 4 is 4304
+Best Run So Far (79.74, 0.12, 6.74) time = 0 error = 0
+------------------------------
+Run 5 stats:
+P = 73.182037, I = 0.159321, D = 8.486647
+Time for Lap 5 is 8678
+Error for lap 5 is 4220
+Best Run So Far (79.74, 0.12, 6.74) time = 0 error = 0
+------------------------------
+Run 6 stats:
+P = 74.970985, I = 0.045197, D = 1.396316
+Time for Lap 6 is 8981
+Error for lap 6 is 5111
+Best Run So Far (79.74, 0.12, 6.74) time = 0 error = 0
+------------------------------
+Run 7 stats:
+P = 68.730461, I = 0.047884, D = 1.856561
+Time for Lap 7 is 8459
+Error for lap 7 is 4223
+Best Run So Far (68.73, 0.05, 1.86) time = 8459 error = 4223
+------------------------------
+Run 8 stats:
+P = 77.737831, I = 0.119900, D = 6.017652
+Time for Lap 8 is 9212
+Error for lap 8 is 4804
+Best Run So Far (68.73, 0.05, 1.86) time = 0 error = 0
+------------------------------
+Run 9 stats:
+P = 77.725700, I = 0.118279, D = 3.713507
+Time for Lap 9 is 8925
+Error for lap 9 is 4188
+Best Run So Far (68.73, 0.05, 1.86) time = 0 error = 0
+Program has run to completion.
+Printing gathered data
+Num Laps = 10
+------------------------------
+Run 0 stats:
+P = 60.000000, I = 0.100000, D = 10.000000
+Time for Lap 0 is 8213
+Error for lap 0 is 4189
+Best Run So Far (60.00, 0.10, 10.00) time = 0 error = 0
+------------------------------
+Run 1 stats:
+P = 63.177284, I = 0.188949, D = 0.015349
+Time for Lap 1 is 8351
+Error for lap 1 is 46539
+Best Run So Far (60.00, 0.10, 10.00) time = 0 error = 0
+------------------------------
+Run 2 stats:
+P = 79.739212, I = 0.122262, D = 6.740521
+Time for Lap 2 is 8675
+Error for lap 2 is 4058
+Best Run So Far (79.74, 0.12, 6.74) time = 8675 error = 4058
+------------------------------
+Run 3 stats:
+P = 73.466614, I = 0.094509, D = 9.034458
+Time for Lap 3 is 8574
+Error for lap 3 is 4239
+Best Run So Far (79.74, 0.12, 6.74) time = 0 error = 0
+------------------------------
+Run 4 stats:
+P = 73.083954, I = 0.214051, D = 9.606600
+Time for Lap 4 is 8999
+Error for lap 4 is 4304
+Best Run So Far (79.74, 0.12, 6.74) time = 0 error = 0
+------------------------------
+Run 5 stats:
+P = 73.182037, I = 0.159321, D = 8.486647
+Time for Lap 5 is 8678
+Error for lap 5 is 4220
+Best Run So Far (79.74, 0.12, 6.74) time = 0 error = 0
+------------------------------
+Run 6 stats:
+P = 74.970985, I = 0.045197, D = 1.396316
+Time for Lap 6 is 8981
+Error for lap 6 is 5111
+Best Run So Far (79.74, 0.12, 6.74) time = 0 error = 0
+------------------------------
+Run 7 stats:
+P = 68.730461, I = 0.047884, D = 1.856561
+Time for Lap 7 is 8459
+Error for lap 7 is 4223
+Best Run So Far (68.73, 0.05, 1.86) time = 8459 error = 4223
+------------------------------
+Run 8 stats:
+P = 77.737831, I = 0.119900, D = 6.017652
+Time for Lap 8 is 9212
+Error for lap 8 is 4804
+Best Run So Far (68.73, 0.05, 1.86) time = 0 error = 0
+------------------------------
+Run 9 stats:
+P = 77.725700, I = 0.118279, D = 3.713507
+Time for Lap 9 is 8925
+Error for lap 9 is 4188
+Best Run So Far (68.73, 0.05, 1.86) time = 0 error = 0
+Program has run to completion.
+Printing gathered data
+Num Laps = 10
+------------------------------
+Run 0 stats:
+P = 60.000000, I = 0.100000, D = 10.000000
+Time for Lap 0 is 8213
+Error for lap 0 is 4189
+Best Run So Far (60.00, 0.10, 10.00) time = 0 error = 0
+------------------------------
+Run 1 stats:
+P = 63.177284, I = 0.188949, D = 0.015349
+Time for Lap 1 is 8351
+Error for lap 1 is 46539
+Best Run So Far (60.00, 0.10, 10.00) time = 0 error = 0
+------------------------------
+Run 2 stats:
+P = 79.739212, I = 0.122262, D = 6.740521
+Time for Lap 2 is 8675
+Error for lap 2 is 4058
+Best Run So Far (79.74, 0.12, 6.74) time = 8675 error = 4058
+------------------------------
+Run 3 stats:
+P = 73.466614, I = 0.094509, D = 9.034458
+Time for Lap 3 is 8574
+Error for lap 3 is 4239
+Best Run So Far (79.74, 0.12, 6.74) time = 0 error = 0
+------------------------------
+Run 4 stats:
+P = 73.083954, I = 0.214051, D = 9.606600
+Time for Lap 4 is 8999
+Error for lap 4 is 4304
+Best Run So Far (79.74, 0.12, 6.74) time = 0 error = 0
+------------------------------
+Run 5 stats:
+P = 73.182037, I = 0.159321, D = 8.486647
+Time for Lap 5 is 8678
+Error for lap 5 is 4220
+Best Run So Far (79.74, 0.12, 6.74) time = 0 error = 0
+------------------------------
+Run 6 stats:
+P = 74.970985, I = 0.045197, D = 1.396316
+Time for Lap 6 is 8981
+Error for lap 6 is 5111
+Best Run So Far (79.74, 0.12, 6.74) time = 0 error = 0
+------------------------------
+Run 7 stats:
+P = 68.730461, I = 0.047884, D = 1.856561
+Time for Lap 7 is 8459
+Error for lap 7 is 4223
+Best Run So Far (68.73, 0.05, 1.86) time = 8459 error = 4223
+------------------------------
+Run 8 stats:
+P = 77.737831, I = 0.119900, D = 6.017652
+Time for Lap 8 is 9212
+Error for lap 8 is 4804
+Best Run So Far (68.73, 0.05, 1.86) time = 0 error = 0
+------------------------------
+Run 9 stats:
+P = 77.725700, I = 0.118279, D = 3.713507
+Time for Lap 9 is 8925
+Error for lap 9 is 4188
+Best Run So Far (68.73, 0.05, 1.86) time = 0 error = 0
+Program has run to completion.
+Program will start in 4
+Program will start in 3
+Program will start in 2
+Program will start in 1
+ProgrProgrProgrProgrProgram will start in 1
+ProgrProgrProgrProgram will start in 1
+ProgrProgrProgram will start in 1
+ProgrProgram will start in 1
+Program will start in 1
+bestRun P (60.00) I (0.10) D (10.00)
+Program will start in 4
+Program will start in 3
+Program will start in 2
+Program will start in 1
+ProgrProgrProgrProgrProgram will start in 1
+ProgrProgrProgrProgram will start in 1
+ProgrProgrProgram will start in 1
+ProgrProgram will start in 1
+Program will start in 1
+Program will start in 4
+Program will start in 3
+Program will start in 2
+Program will start in 1
+ProgrProgrProgrProgrProgram will start in 1
+ProgrProgrProgrProgram will start in 1
+ProgrProgrProgram will start in 1
+ProgrProgram will start in 1
+Program will start in 1
+Program will start in 4
+Program will start in 3
+Program will start in 2
+Program will start in 1
+ProgrProgrProgrProgrProgram will start in 1
+ProgrProgrProgrProgram will start in 1
+ProgrProgrProgram will start in 1
+ProgrProgram will start in 1
+Program will start in 1
+bestRun P (60.00) I (0.10) D (10.00)
+New Best Found!
+bestRun P (44.21) I (0.02) D (4.68)
+bestRun P (44.21) I (0.02) D (4.68)
+bestRun P (44.21) I (0.02) D (4.68)
+bestRun P (44.21) I (0.02) D (4.68)
+Program will start in 4
+Program will start in 3
+Program will start in 2
+Program will start in 1
+ProgrProgrProgrProgrProgram will start in 1
+ProgrProgrProgrProgram will start in 1
+ProgrProgrProgram will start in 1
+ProgrProgram will start in 1
+Program will start in 1
+Program will start in 4
+Program will start in 3
+Program will start in 2
+Program will start in 1
+ProgrProgrProgrProgrProgram will start in 1
+ProgrProgrProgrProgram will start in 1
+ProgrProgrProgram will start in 1
+ProgrProgram will start in 1
+Program will start in 1
+Program will start in 4
+Program will start in 3
+Program will start in 2
+Program will start in 1
+ProgrProgrProgrProgrProgram will start in 1
+ProgrProgrProgrProgram will start in 1
+ProgrProgrProgram will start in 1
+ProgrProgram will start in 1
+Program will start in 1
+bestRun P (60.00) I (0.10) D (10.00)
+Program will start in 4
+Program will start in 3
+Program will start in 2
+Program will start in 1
+ProgrProgrProgrProgrProgram will start in 1
+ProgrProgrProgrProgram will start in 1
+ProgrProgrProgram will start in 1
+ProgrProgram will start in 1
+Program will start in 1
+bestRun P (60.00) I (0.10) D (10.00)
+bestRun P (60.00) I (0.10) D (10.00)
+bestRun P (60.00) I (0.10) D (10.00)
+bestRun P (60.00) I (0.10) D (10.00)
+bestRun P (60.00) I (0.10) D (10.00)
+Program will start in 4
+Program will start in 3
+Program will start in 2
+Program will start in 1
+ProgrProgrProgrProgrProgram will start in 1
+ProgrProgrProgrProgram will start in 1
+ProgrProgrProgram will start in 1
+ProgrProgram will start in 1
+Program will start in 1
+bestRun P (60.00) I (0.10) D (10.00)
+bestRun P (60.00) I (0.10) D (10.00)
+Program will start in 4
+Program will start in 3
+Program will start in 2
+Program will start in 1
+ProgrProgrProgrProgrProgram will start in 1
+ProgrProgrProgrProgram will start in 1
+ProgrProgrProgram will start in 1
+ProgrProgram will start in 1
+Program will start in 1
+bestRun P (60.00) I (0.10) D (10.00)
+bestRun P (60.00) I (0.10) D (10.00)
+bestRun P (60.00) I (0.10) D (10.00)
+bestRun P (60.00) I (0.10) D (10.00)
+bestRun P (60.00) I (0.10) D (10.00)
+bestRun P (60.00) I (0.10) D (10.00)
+bestRun P (60.00) I (0.10) D (10.00)
+Program will start in 4
+Program will start in 3
+Program will start in 2
+Program will start in 1
+ProgrProgrProgrProgrProgram will start in 1
+ProgrProgrProgrProgram will start in 1
+ProgrProgrProgram will start in 1
+Program will start in 4
+Program will start in 3
+Program will start in 2
+Program will start in 1
+ProgrProgrProgrProgrProgram will start in 1
+ProgrProgrProgrProgram will start in 1
+ProgrProgrProgram will start in 1
+ProgrProgram will start in 1
+Program will start in 1
+bestRun P (60.00) I (0.10) D (10.00)
+Program will start in 4
+Program will start in 3
+Program will start in 2
+Program will start in 1
+ProgrProgrProgrProgrProgram will start in 1
+ProgrProgrProgrProgram will start in 1
+ProgrProgrProgram will start in 1
+ProgrProgram will start in 1
+Program will start in 1
+bestRun P (60.00) I (0.10) D (10.00)
+New Best Found!
+bestRun P (79.97) I (0.12) D (6.22)
+New Best Found!
+bestRun P (60.50) I (0.22) D (8.75)
+bestRun P (60.50) I (0.22) D (8.75)
+bestRun P (60.50) I (0.22) D (8.75)
+Program will start in 4
+Program will start in 3
+Program will start in 2
+Program will start in 1
+ProgrProgrProgrProgrProgram will start in 1
+ProgrProgrProgrProgram will start in 1
+ProgrProgrProgram will start in 1
+ProgrProgram will start in 1
+Program will start in 1
+Program will start in 4
+Program will start in 3
+Program will start in 2
+Program will start in 1
+ProgrProgrProgrProgrProgram will start in 1
+ProgrProgrProgrProgram will start in 1
+ProgrProgrProgram will start in 1
+ProgrProgram will start in 1
+Program will start in 1
+Program will start in 4
+Program will start in 3
+Program will start in 2
+Program will start in 1
+ProgrProgrProgrProgrProgram will start in 1
+ProgrProgrProgrProgram will start in 1
+ProgrProgrProgram will start in 1
+ProgrProgram will start in 1
+Program will start in 1
+bestRun P (60.00) I (0.10) D (10.00)
+New Best Found!
+bestRun P (75.24) I (0.12) D (7.34)
+bestRun P (75.24) I (0.12) D (7.34)
+bestRun P (75.24) I (0.12) D (7.34)
+New Best Found!
+bestRun P (55.99) I (0.21) D (11.33)
+bestRun P (55.99) I (0.21) D (11.33)
+bestRun P (55.99) I (0.21) D (11.33)
+bestRun P (55.99) I (0.21) D (11.33)
+bestRun P (55.99) I (0.21) D (11.33)
+bestRun P (55.99) I (0.21) D (11.33)
+Printing gathered data
+Num Laps = 10
+------------------------------
+Run 0 stats:
+P = 60.000000, I = 0.100000, D = 10.000000
+Time for Lap 0 is 1015
+Error for lap 0 is 33260
+Best Run So Far (60.00, 0.10, 10.00) time = 0 error = 0
+------------------------------
+Run 1 stats:
+P = 75.241745, I = 0.118956, D = 7.336915
+Time for Lap 1 is 8438
+Error for lap 1 is 4155
+Best Run So Far (75.24, 0.12, 7.34) time = 8438 error = 4155
+------------------------------
+Run 2 stats:
+P = 79.207825, I = 0.155958, D = 9.016040
+Time for Lap 2 is 9172
+Error for lap 2 is 4207
+Best Run So Far (75.24, 0.12, 7.34) time = 0 error = 0
+------------------------------
+Run 3 stats:
+P = 70.804291, I = 0.072701, D = 16.023790
+Time for Lap 3 is 8484
+Error for lap 3 is 4314
+Best Run So Far (75.24, 0.12, 7.34) time = 0 error = 0
+------------------------------
+Run 4 stats:
+P = 55.990631, I = 0.214467, D = 11.334535
+Time for Lap 4 is 8028
+Error for lap 4 is 3932
+Best Run So Far (55.99, 0.21, 11.33) time = 8028 error = 3932
+------------------------------
+Run 5 stats:
+P = 46.604294, I = 0.233992, D = 1.660859
+Time for Lap 5 is 7999
+Error for lap 5 is 4587
+Best Run So Far (55.99, 0.21, 11.33) time = 0 error = 0
+------------------------------
+Run 6 stats:
+P = 63.091934, I = 0.230580, D = 9.183729
+Time for Lap 6 is 8406
+Error for lap 6 is 3645
+Best Run So Far (55.99, 0.21, 11.33) time = 0 error = 0
+------------------------------
+Run 7 stats:
+P = 47.117264, I = 0.297790, D = 2.006676
+Time for Lap 7 is 8671
+Error for lap 7 is 6014
+Best Run So Far (55.99, 0.21, 11.33) time = 0 error = 0
+------------------------------
+Run 8 stats:
+P = 74.305138, I = 0.252795, D = 6.788027
+Time for Lap 8 is 8739
+Error for lap 8 is 3888
+Best Run So Far (55.99, 0.21, 11.33) time = 0 error = 0
+------------------------------
+Run 9 stats:
+P = 59.732765, I = 0.121761, D = 14.773060
+Time for Lap 9 is 8417
+Error for lap 9 is 4494
+Best Run So Far (55.99, 0.21, 11.33) time = 0 error = 0
+Program has run to completion.
+Printing gathered data
+Num Laps = 10
+------------------------------
+Run 0 stats:
+P = 60.000000, I = 0.100000, D = 10.000000
+Time for Lap 0 is 1015
+Error for lap 0 is 33260
