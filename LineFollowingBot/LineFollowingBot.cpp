@@ -103,14 +103,18 @@ void initialize()
 	}
 	seedRand(randNum);
 
+
+	//Values found after 1000 runs
+	// Learned PID = (59.627544, 0.142457, 3.848332)
+
 	//Initialize first run statistics
-	runStat.P          = 60.0;
+	runStat.P          = 25.0;
 	runStat.I          =  0.1;
 	runStat.D          = 10.0;
 	runStat.lapTime    = 	0;
 	runStat.totalError = 	0;
 
-	runStat.bestP      = 60.0;
+	runStat.bestP      = 25.0;
 	runStat.bestI      =  0.1;
 	runStat.bestD      = 10.0;
 	runStat.bestTime   = 9999;
@@ -268,6 +272,7 @@ int think()
 			numLaps++;
 
 			//Calculate new P, I, D values
+			//These do/while loops shouldn't need to be here except to make sure no values go below zero.
 			do
 				runStat.P = runStat.bestP + (float)annealNumerator/(float)annealDenominator * randFloatRange(-annealStepP, annealStepP);
 			while (runStat.P < 0 || runStat.P > runStat.bestP + annealStepP || runStat.P < runStat.bestP - annealStepP);

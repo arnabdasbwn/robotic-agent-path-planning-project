@@ -8,10 +8,15 @@
 //#include <cmath>
 #include <stdlib.h>
 
+// If you want to do more than 20 runs or so, you will have to comment this next line out
+// The microcontroller has limited memory and cannot store history for an arbitrary number of runs.
 #define KEEP_STAT_HISTORY
 
 struct RunStat
 {
+	// Using floats on a micro-controller is bad since there usually isn't any hardware support
+	// for them and have to be calculated in software. For better performance, it would probably
+	// be better if I multiplied values by some number to keep them all in the integer range.
 	float
 		P,
 		I,
